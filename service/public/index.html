@@ -1,0 +1,687 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)"><!-- 사이트 수정 26(2026-11-22): 어두운 모드 주소창 색 -->
+<title>알바체커 - 근로·외주 계약서 점검</title>
+<!-- 사이트 수정 25(2026-11-22): 링크 미리보기(메신저·메일). 이미지 주소는 배포 주소 기준 -->
+<meta name="description" content="계약서 사진으로 불리한 조항을 찾고 근로기준법을 쉽게 배워요. 근로계약서 점검과 외주·연재 계약서 비교. 이름·연락처는 휴대폰 안에서 가리고, 판정은 정해진 규칙(코드)이 해요.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="알바체커">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:title" content="알바체커 - 근로·외주 계약서 점검">
+<meta property="og:description" content="계약서 사진으로 불리한 조항을 찾고 근로기준법을 쉽게 배워요. 이름·연락처는 휴대폰 안에서 가리고, 판정은 정해진 규칙(코드)이 해요.">
+<meta property="og:url" content="https://contract-check.zipry1.workers.dev/">
+<meta property="og:image" content="https://contract-check.zipry1.workers.dev/og-image.png">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="알바체커 - 근로계약서 점검, 외주·연재 계약서 비교">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="style.css?v=20261123q">
+</head>
+<body>
+<!-- 공통 상단(와이어프레임 공통 틀): 서비스명 + AI 질문 -->
+<header class="top"><h1><button id="b-top" class="top-btn" aria-label="홈으로">알바체커</button></h1>
+  <button class="top-ask" data-go="s-ask"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg>AI 질문</button></header>
+<!-- UI 개선 ① 3차 10(2026-11-21): 모든 화면을 본문 구역으로 묶음(화면 읽기 프로그램의 구역 목록용, 보이는 모양 그대로) -->
+<main id="main">
+
+<!-- 0. 홈 (무채색 시안 2026-11-19) -->
+<section id="s-home" class="screen active">
+  <!-- UI 개선 ① 홈(2026-11-21, UI개선_01_홈_기획서.md 문제 1): '사회초년생'·'프리랜서' 단어 안 씀, 시작 버튼 2개로 바로 이동 -->
+  <!-- 2026-11-23: 카카오톡 등 앱 안 브라우저 안내(인쇄·파일 받기가 안 됨) — 결과는 저장되지 않으므로 점검 전에 옮기게 함 -->
+  <div id="inapp-note" class="notice warn inapp-note" hidden>
+    <button type="button" id="b-inapp-close" class="inapp-x" aria-label="안내 닫기"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button><!-- 2026-11-23 사용자 요청: 안내 띠 닫기 -->
+    <p><b id="inapp-name">앱 안에서 열려 있어요.</b> 이 화면에서는 결과를 PDF로 저장할 수 없어요. 크롬·사파리 같은 브라우저로 열어 쓰는 걸 권해요.</p>
+    <p id="inapp-how" hidden>오른쪽 위·아래 메뉴(⋮ 또는 공유)에서 '다른 브라우저로 열기'를 눌러 주세요.</p>
+    <button type="button" id="b-open-ext" class="btn" hidden>다른 브라우저로 열기</button>
+  </div>
+  <!-- 2026-11-23 디자인 ④: 홈 제목 옆 그림(계약서+돋보기, 흑백, 꾸밈용) -->
+  <!-- 2026-11-23: 카톡 안내 띠가 있으면 그림이 띠를 덮던 문제 → 그림을 제목 묶음(.home-head) 기준으로 -->
+  <div class="home-head">
+  <svg class="ill ill-home" viewBox="0 0 120 120" aria-hidden="true" focusable="false"><circle class="ill-bg" cx="60" cy="62" r="52"/><rect class="ill-paper" x="30" y="20" width="54" height="72" rx="7"/><path class="ill-line" d="M40 36h34M40 46h34M40 56h22M40 66h28"/><circle class="ill-paper" cx="78" cy="74" r="17" style="stroke-width:4"/><path class="ill-ink" d="M90 87l13 13" style="stroke-width:7"/><path class="ill-ink" d="M70.5 74l5.5 5.5 9-10"/><circle class="ill-dot" cx="24" cy="30" r="4"/><circle class="ill-dot2" cx="100" cy="28" r="3"/><path class="ill-dot2s" d="M98 50h4M100 48v4"/></svg>
+  <p class="eyebrow">근로·외주 계약서 점검</p>
+  <!-- 2026-11-23 디자인 최종 수정: 메인글 변경, 밑 설명 글(계약서 사진으로 불리한 조항을…) 뺌 -->
+  <h2 class="hero-t">놓치지 마세요,<br>계약서 속 내 권리</h2>
+  </div>
+  <div class="hero">
+    <ol class="h-steps">
+      <li><span>1</span>계약서를 찍거나 사진을 골라요</li>
+      <li><span>2</span>이름·연락처는 휴대폰 안에서 가려요</li>
+      <li><span>3</span>법·표준계약서 기준으로 알려 드려요</li>
+    </ol>
+    <button class="hero-cta" data-go="s-start">근로계약서 점검하기<small>알바·인턴·수습·계약직</small></button>
+    <button class="hero-cta2" id="b-home-fl">외주·연재 계약서 비교하기<small>디자인·웹툰 계약서 1~3개를 표준과 비교</small></button>
+    <button type="button" class="hero-note" id="b-home-sample">사진이 없나요? 샘플 계약서로 먼저 체험하기 ›</button><!-- 사이트 수정 22(2026-11-22): 글자 → 근로계약서 점검 샘플 목록으로 바로 -->
+  </div>
+
+  <!-- 2026-11-23 오후 디자인 최종 수정: 홈 줄이기 — '법 안내'(주제 4개)·'AI에게 질문하기' 구역 뺌(아래 탭·오른쪽 위 AI 질문으로 들어감). 백업 backup-20261123-홈줄이기 -->
+  <div class="home-sec">
+    <div class="sec-h"><h3>커뮤니티</h3><button id="b-home-comm" class="more" data-go="s-comm">둘러보기 ›</button></div>
+    <p class="muted">비슷한 상황의 경험담과 질문을 나눠 보세요</p>
+    <div id="home-posts"><div class="hp-skel" aria-busy="true" aria-label="최근 글을 불러오는 중"><div><i></i><i></i></div><div><i></i><i></i></div><div><i></i><i></i></div></div></div>
+  </div>
+  <p class="disclaimer home-disc">이 서비스는 법률 자문이 아닙니다. 궁금한 점은 고용노동부 고객상담센터(국번 없이 <a class="tel" href="tel:1350" aria-label="1350 전화 걸기">1350</a>, 평일 9~18시, 통화료 유료)에 문의하세요. <a href="privacy.html" class="pv-link" target="_blank" rel="noopener">개인정보 처리방침</a></p>
+</section>
+
+<!-- 법 안내: 주제 목록 -->
+<section id="s-learn" class="screen">
+  <h2 class="sec">어떤 권리가 궁금하세요?</h2>
+  <p class="muted">주제를 골라 쉬운 설명을 확인해 보세요</p>
+  <div id="topic-list"></div>
+  <p class="muted" id="learn-checked"></p>
+</section>
+
+<!-- 법 안내: 주제 카드 -->
+<!-- UI 개선 ② 법 안내(2026-11-21, UI개선_02_법안내_기획서.md): 뒤로 버튼, 관련 주제 아래로, 겹치는 버튼 삭제 -->
+<section id="s-topic" class="screen">
+  <button type="button" class="back-link" id="t-back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg>법 안내</button>
+  <div class="card">
+    <div class="card-h"><h2 id="t-title"></h2><span id="t-checked" class="tag"></span></div>
+    <h3 class="k">핵심 요약</h3>
+    <p id="t-lead" class="summary-t"></p>
+    <!-- 2026-11-22 읽기 쉽게: 긴 카드의 '한눈에'(핵심 숫자 몇 줄) -->
+    <dl id="t-keys" class="t-keys" hidden></dl>
+  </div>
+  <div class="card"><h3 class="k">쉬운 설명</h3><div id="t-body"></div></div>
+  <div class="card"><h3 class="k">실제 상황 예시</h3>
+    <div class="ex"><div class="k2">상황</div><div id="t-ex-situation"></div></div>
+    <div class="ex"><div class="k2">계산</div><div id="t-ex-calc"></div></div>
+    <div class="ex"><div class="k2">주의할 점</div><div id="t-ex-caution"></div></div>
+  </div>
+  <div class="card"><h3 class="k">근거 조문</h3><div id="t-articles" class="group"></div>
+    <button type="button" id="t-art-more" class="fold-btn t-art-more" aria-expanded="false" aria-controls="t-articles" hidden><span id="t-art-more-t"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+    <p id="t-small" class="muted"></p></div>
+  <div class="card rel-card" id="t-related-card"><h3 class="k">같이 보면 좋은 주제</h3><div id="t-related" class="chips"></div></div>
+  <div class="card"><p class="disclaimer-b">이 내용은 법률 자문이 아닙니다.</p>
+    <p class="muted">법령 개정으로 내용이 달라질 수 있어요. 중요한 사항은 고용노동부 상담(<a class="tel" href="tel:1350" aria-label="1350 전화 걸기">1350</a>)을 이용하세요.</p></div>
+  <button class="btn primary" data-go="s-start">내 계약서 점검하기</button>
+  <button class="btn" data-go="s-ask">AI에게 질문하기</button>
+</section>
+
+<!-- 법 안내: 조문 원문 (UI 개선 ② 3차 2026-11-21: 소제목 h3, 1350 전화 링크) -->
+<section id="s-article" class="screen">
+  <button type="button" class="back-link" id="a-back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg><span id="a-back-label">뒤로</span></button>
+  <h2 id="a-title" class="sec"></h2>
+  <div class="card"><div id="a-version"></div><div id="a-checked" class="muted"></div></div>
+  <div class="card"><h3 class="k" id="a-now-k">조문 원문</h3><div id="a-text" class="article"></div></div>
+  <div id="a-amended" class="group" hidden><div class="item"><h3 class="k" id="a-amended-k"></h3><div id="a-amended-text" class="article"></div></div></div>
+  <p id="a-note" class="notice" hidden></p>
+  <p id="a-small" class="notice" hidden></p>
+  <a id="a-link" class="btn" target="_blank" rel="noopener">국가법령정보센터에서 원문 보기 (새 창)<svg class="ext-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
+  <p class="disclaimer">이 내용은 법률 자문이 아닙니다. 구체적인 사안은 고용노동부 상담 <a class="tel" href="tel:1350" aria-label="1350 전화 걸기">1350</a>에 문의하세요.</p>
+</section>
+
+<!-- AI 질문 (근거 제한형) -->
+<!-- UI 개선 ⑤ AI 질문(2026-11-21, UI개선_05_AI질문_기획서.md): 질문 칸을 위로·답변은 바로 아래·1350 안내 맨 아래, 이름표, 뒤로, 44px, 보내는 중 표시 -->
+<section id="s-ask" class="screen">
+  <button type="button" class="back-link" id="ask-back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg>뒤로</button>
+  <h2 class="sec">AI에게 질문하기</h2>
+  <!-- 생성형 AI 사전 고지(AI 기본법 제31조①, 법적 검토 9번, 사용자 승인 2026-11-21) -->
+  <div class="card guide"><div class="guide-ic" aria-hidden="true"><span class="ic" data-ic="bot"></span></div><p class="muted">이 기능은 <b>생성형 AI(Google Gemini)</b>를 써요. 등록된 법 조문만 근거로 답해요. 틀릴 수 있어요.</p></div>
+  <!-- 사이트 수정 14(2026-11-22, 같은 날 바로잡음): 답하는 범위 = laws.json에 등록한 조문(근로기준법·최저임금법·4대보험·퇴직급여법·고용보험법 62개)과 법 안내 카드 10개. 답하기 어려운 질문은 이유별 안내(#ask-nf) -->
+  <p class="muted ask-scope">근로기준법·최저임금법·퇴직금·4대보험 등 <b>미리 등록해 둔 조문</b>과 법 안내 주제로 답해요. 답하기 어려운 질문에는 이유와 함께 다른 방법을 알려 드려요.</p>
+  <label class="q-label" for="ask-q">질문</label>
+  <textarea id="ask-q" maxlength="500" placeholder="질문을 입력하세요 (최대 500자)" aria-describedby="ask-pii ask-count"></textarea>
+  <div class="ask-meta"><span id="ask-pii">전화번호·주민번호 등 개인정보는 입력하지 마세요. 질문은 답변을 위해 Google(미국 회사)의 AI 서비스로 보내지고, 이 서비스 서버에는 저장하지 않아요. <a href="privacy.html" class="pv-link" target="_blank" rel="noopener">개인정보 처리방침</a></span><span id="ask-count">0/500</span></div>
+  <p id="ask-warn" class="qwarn" role="alert" hidden></p>
+  <div class="ask-send"><span class="muted">접속 주소당 하루 300회</span><button id="b-ask" class="btn primary">보내기</button></div>
+  <div id="ask-loading" class="ask-skel" hidden><p>답을 찾는 중이에요. 몇 초 걸릴 수 있어요.</p><i></i><i></i><i></i></div>
+  <div id="ask-answer" class="card" hidden>
+    <p class="ai-badge">AI가 생성한 답변입니다. 법률 자문이 아닙니다.</p>
+    <div id="ans-q" class="q-bubble"></div>
+    <h3 class="k" id="ans-h" tabindex="-1">AI 답변</h3>
+    <div id="ans-text" class="answer"></div>
+    <div class="k" style="margin-top:10px">근거 조문</div>
+    <div id="ans-articles" class="ans-btns"></div>
+    <div id="ans-topics-wrap"><div id="ans-topics" class="ans-btns"></div></div>
+    <p class="disclaimer" id="ans-checked"></p>
+  </div>
+  <!-- 2026-11-22: 답하기 어려울 때 이유별 안내(예전 '확인 불가' 화면 대신 같은 자리). 문구·버튼은 ask.js에 미리 정한 것만 -->
+  <div id="ask-nf" class="card nf-card" hidden></div>
+  <div class="notice ask-tools">
+    <strong>이런 질문을 할 수 있어요</strong>
+    <div class="ask-ex chips">
+      <button class="chip" data-ex>수습 기간에 최저임금보다 적게 받아도 되나요?</button>
+      <button class="chip" data-ex>주휴수당은 언제 받을 수 있나요?</button>
+      <button class="chip" data-ex>휴게시간이 없으면 어떻게 되나요?</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="k">AI가 답하기 어려운 질문이라면</div>
+    <p class="muted">내 상황에 맞는 판단이 필요하거나 등록되지 않은 내용은 고용노동부 상담 창구에서 물어볼 수 있어요.</p>
+    <button class="btn" data-go="s-unknown">상담 창구 보기</button>
+  </div>
+</section>
+
+<!-- AI 질문: 확인 불가 -->
+<section id="s-unknown" class="screen">
+  <button type="button" class="back-link" id="u-back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg>질문으로 돌아가기</button>
+  <h2 class="sec">상담 창구 안내</h2>
+  <div class="card info-plain"><p class="summary-t">AI가 답하기 어려운 질문은 상담 창구에서 물어보세요.</p>
+    <p class="muted">내 상황에 맞는 판단은 구체적인 사정을 들어 봐야 해요. 법 내용을 묻는 질문으로 바꾸면 AI가 근거 조문과 함께 답할 수 있어요.</p></div>
+  <div class="card"><div class="k">고용노동부 상담</div><p class="big-num"><a class="tel" href="tel:1350" aria-label="1350 전화 걸기">1350</a></p>
+    <p class="muted">근로조건, 임금, 계약 관련 궁금증을 상담받을 수 있어요(국번 없이, 평일 9~18시, 통화료 유료).</p>
+    <a class="btn ext-btn" href="https://www.moel.go.kr/minwon/fastcounsel/fastcounselList.do" target="_blank" rel="noopener" aria-label="글로 묻기: 빠른 인터넷 상담 (새 창)">글로 묻기: 빠른 인터넷 상담 ↗</a></div>
+  <p class="disclaimer">이 내용은 법률 자문이 아닙니다.</p>
+  <button class="btn" data-go="s-learn">법 안내 보기</button>
+  <button class="btn primary" id="u-again">다시 질문하기</button>
+</section>
+
+<!-- 0-1. 계약서 점검 탭 첫 화면: 근로계약서 점검 / 프리랜서 계약서 비교 (시안 ①, 2026-11-20) -->
+<section id="s-check" class="screen">
+  <h2 class="sec">계약서 점검</h2>
+  <p class="muted">어떤 계약서인가요?</p>
+  <button class="tile icon-tile" data-go="s-start"><i aria-hidden="true"><span class="ic" data-ic="file"></span></i><span><b>근로계약서 점검</b><span>알바·인턴·수습·계약직. 법 기준으로 위반 가능성을 알려 드려요</span></span></button>
+  <button class="tile icon-tile" id="b-fl-open"><i aria-hidden="true"><span class="ic" data-ic="scale"></span></i><span><b>외주·연재 계약서 비교</b><span>계약서 1개는 표준계약서 기준과, 2~3개는 같은 기준으로 나란히 비교해요</span></span></button>
+  <div class="card guide"><div class="guide-ic" aria-hidden="true"><span class="ic" data-ic="bulb"></span></div>
+    <p class="muted">회사에 출근해서 시키는 대로 일하고 월급을 받는다면 프리랜서 계약서라도 근로자일 수 있어요. 이럴 땐 근로계약서 점검을 이용해 보세요.</p></div>
+</section>
+
+<!-- 프리랜서 ② 비교 설정 -->
+<!-- UI 개선 ③ 3차(2026-11-21) 19: 뒤로 버튼(들어온 화면 이름) -->
+<section id="s-fl-setup" class="screen">
+  <button type="button" class="back-link" id="fls-back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg><span id="fls-back-label">계약서 점검</span></button>
+  <h2 class="sec">외주·연재 계약서 비교</h2>
+  <!-- 생성형 AI 사전 고지(AI 기본법 제31조①, 법적 검토 9번, 사용자 승인 2026-11-21) -->
+  <div class="card guide"><div class="guide-ic" aria-hidden="true"><span class="ic" data-ic="bot"></span></div><p class="muted">이 기능은 <b>생성형 AI(Google Gemini)</b>를 써요. AI는 계약서 글자를 읽기만 하고, 비교는 정해진 규칙(코드)이 해요. AI가 잘못 읽을 수 있어요.</p></div>
+  <div class="k-label">1. 어떤 계약인가요?</div>
+  <div class="pick" id="fl-type">
+    <button data-fltype="납품형" class="on"><b>만들어 주고 돈&nbsp;받는 계약</b><span>예: 로고·메뉴판 같은 디자인 납품</span></button>
+    <button data-fltype="권리형"><b>내 작품을 쓰게&nbsp;하는 계약</b><span>예: 웹툰 연재</span></button>
+  </div>
+  <p class="muted fl-plain">잘 모르겠으면 아무거나 골라도 돼요. AI가 읽어 보고 다르면 알려 드려요.</p>
+  <div class="k-label">2. 계약서가 몇 개인가요?</div>
+  <div class="seg fl-count" id="fl-count"><button data-flcount="1">1개</button><button data-flcount="2" class="on">2개</button><button data-flcount="3">3개</button></div>
+  <p id="fl-count-note" class="muted fl-count-note" hidden>1개면 표준계약서 기준과 비교해 빠진 조항·다른 조건을 알려 드려요.</p><!-- 2026-11-23 UI/UX 점검 6 -->
+  <div class="k-label">이런 기준으로 비교해요</div>
+  <div class="card info-plain" id="fl-preview"></div>
+  <button id="b-fl-setup-next" class="btn primary">다음</button>
+</section>
+
+<!-- 프리랜서 ③ 계약서 올리기 -->
+<section id="s-fl-upload" class="screen">
+  <button type="button" class="back-link" id="flu-back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg><span id="flu-back-label">비교 설정</span></button>
+  <h2 class="sec" id="fl-up-title">계약서 올리기</h2>
+  <p class="muted">계약서마다 사진이나 PDF를 1~3장 올리고, 장마다 이름·주소·연락처·계좌를 가려 주세요.</p>
+  <div class="card guide"><div class="guide-ic" aria-hidden="true"><span class="ic" data-ic="lock"></span></div>
+    <p class="muted">가리지 않은 사진은 보내지 않아요. 가린 사진과, 여러 장일 때 '개인정보 없음'으로 고른 장(가리지 않은 그대로)만 AI 분석을 위해 Google(미국 회사)의 AI 서비스로 보내져요. 이 서비스 서버에는 사진과 분석 결과를 저장하지 않아요. Google은 유료 이용 데이터를 자사 제품 개선에 쓰지 않지만, 정책 위반 감지를 위해 일정 기간 기록할 수 있어요. <a href="privacy.html" class="pv-link" target="_blank" rel="noopener">개인정보 처리방침</a></p></div>
+  <div id="fl-slots"></div>
+  <p class="muted fl-plain">계약서 이름은 상대 회사 이름이나 별명으로 바꿀 수 있어요(분석에는 보내지 않아요). 비워 두면 AI가 읽은 회사 이름을 붙여요.</p>
+  <button id="b-fl-analyze" class="btn primary" disabled>비교 시작하기</button>
+  <div class="k-label">샘플로 먼저 체험해 보기</div>
+  <button class="tile icon-tile" data-flsample="납품형"><i aria-hidden="true"><span class="ic" data-ic="pen"></span></i><span><b>디자인 외주 계약서 <span class="fl-sn">2</span>개</b><span class="fl-sd" data-one="카페 디자인 외주 계약서를 표준계약서와 비교(가상 계약서)">같은 카페 디자인 일, 조건이 서로 다른 곳(가상 계약서)</span></span></button>
+  <button class="tile icon-tile" data-flsample="권리형"><i aria-hidden="true"><span class="ic" data-ic="book"></span></i><span><b>웹툰 연재 계약서 <span class="fl-sn">2</span>개</b><span class="fl-sd" data-one="웹툰 연재 계약서를 표준계약서와 비교(가상 계약서)">같은 작품, 조건이 서로 다른 플랫폼(가상 계약서)</span></span></button>
+  <input id="fl-in-camera" type="file" accept="image/*" capture="environment" hidden>
+  <input id="fl-in-file" type="file" accept="image/*,application/pdf,.pdf" hidden>
+</section>
+
+<!-- 프리랜서: '개인정보 없음' 체크 확인 창(법적 검토 5번). 2026-11-22 사용자 결정으로 체크한 장도 가리지 않은 그대로 보내 분석함(11-20엔 전송 안 함이었음) -->
+<div id="fl-nopii-ov" class="overlay" hidden role="dialog" aria-modal="true" aria-labelledby="fl-nopii-t">
+  <div class="overlay-box">
+    <p id="fl-nopii-t"><b>이 장에 개인정보가 정말 없나요?</b></p>
+    <p>이름·전화번호·주소·주민등록번호·계좌번호·서명이 <b>하나라도</b> 있으면 가려 주세요.</p>
+    <p class="qwarn">체크한 장은 <b>가리지 않은 그대로 AI로 보내 분석해요.</b> 개인정보가 하나라도 있으면 꼭 가려 주세요. 계약서마다 가린 장이 한 장 이상 있어야 해요.</p>
+    <button id="b-fl-nopii-mask" class="btn primary">가리러 가기</button>
+    <button id="b-fl-nopii-yes" class="btn">네, 개인정보가 없어요</button>
+    <button id="b-fl-nopii-no" class="btn">취소</button>
+  </div>
+</div>
+
+<!-- 프리랜서: 분석 중 -->
+<section id="s-fl-wait" class="screen">
+  <div class="center-col"><div class="spinner" aria-hidden="true"></div>
+    <h2>계약서를 읽고 있어요</h2>
+    <p class="muted">AI가 계약서마다 두 번 읽고 서로 비교해요. 잠시만 기다려 주세요.</p></div>
+  <div id="fl-wait-list" class="group"></div>
+  <p id="fl-wait-sec" class="muted center">0초</p>
+  <p class="muted center">사진과 분석 결과는 이 서비스 서버에 저장하지 않아요.</p>
+  <button id="b-fl-cancel" class="btn">분석 취소</button>
+</section>
+
+<!-- 프리랜서 ④ 값 확인 -->
+<!-- UI 개선 ③ 3차 21: 화면 제목(h2), 18: 아래 고정 진행 막대 -->
+<section id="s-fl-check" class="screen">
+  <h2 class="sec">계약서 원본과 비교해 주세요</h2>
+  <div class="card info-plain">
+    <p class="ai-badge">AI가 읽은 결과입니다. 법률 자문이 아닙니다.</p>
+    <p class="muted">AI가 잘못 읽은 곳이 있으면 고쳐 주세요. 고쳐도 AI를 다시 부르지 않고 비교만 다시 계산해요.</p>
+  </div>
+  <div class="tabs3" id="fl-tabs"></div>
+  <div id="fl-check-body"></div>
+  <button type="button" id="b-fl-all" class="btn" hidden>이 계약서 남은 항목 모두 원본과 같아요</button><!-- 2026-11-23 UI/UX 2차 3 -->
+  <div class="ck-bar"><div class="p" aria-live="polite"><b id="fl-progress"></b><span id="fl-progress-sub"></span></div><button id="b-fl-result" class="btn primary">비교 결과 보기</button></div>
+</section>
+
+<!-- 프리랜서: 값 고치기 창 -->
+<div id="fl-edit-ov" class="overlay" hidden role="dialog" aria-modal="true" aria-labelledby="fl-edit-t">
+  <div class="overlay-box">
+    <p id="fl-edit-t"><b>값 고치기</b> <span id="fl-edit-name" class="muted"></span></p>
+    <p class="muted">원본 계약서를 보고 맞게 고쳐 주세요.</p>
+    <div id="fl-edit-body" class="editor"></div>
+    <div class="row"><button id="b-fl-edit-cancel" class="btn">취소</button><button id="b-fl-edit-save" class="btn primary">저장</button></div>
+  </div>
+</div>
+
+<!-- 프리랜서 ⑤ 비교 결과 -->
+<section id="s-fl-result" class="screen">
+  <p class="ai-badge">AI가 읽고 코드가 비교한 결과입니다. 법률 자문이 아닙니다.</p>
+  <h2 class="sec" id="fl-res-title">계약서 비교</h2>
+  <p class="res-sub" id="fl-res-sub"></p>
+  <div class="stats" id="fl-stats"></div>
+  <div id="fl-names" class="group"></div>
+  <div class="legend"><span><i class="lg-miss"></i>계약서에 없음</span><span><i class="lg-diff"></i>표준과 다름</span></div>
+  <div id="fl-rows"></div>
+  <div id="fl-notes"></div>
+  <!-- 사이트 수정 13(2026-11-22): 외주·연재 분쟁 창구. 출처 문체부 예술인권리침해 신고(mcst.go.kr), 한국저작권위원회 조정(copyright.or.kr), 디자인 용역 표준계약서 제16조 -->
+  <div class="card fl-help info-plain"><b>계약 문제가 생기면 도움받을 곳</b>
+    <ul class="plain">
+      <li><b>웹툰 등 예술 활동 계약</b>: 불공정행위를 문화체육관광부에 신고할 수 있어요(예술인권리보장법). <a class="ext" href="https://www.mcst.go.kr/site/s_minwon/eCulture/artSinmungo/artSinmungo.jsp" target="_blank" rel="noopener" aria-label="예술인권리침해 신고 안내 (새 창)">신고 안내 ↗</a></li>
+      <li><b>저작권 분쟁</b>: 한국저작권위원회에 조정을 신청할 수 있어요(수수료 있음). <a class="ext" href="https://www.copyright.or.kr/business/mediation/adjustment/index.do" target="_blank" rel="noopener" aria-label="한국저작권위원회 조정 안내 (새 창)">조정 안내 ↗</a></li>
+      <li><b>디자인 용역 분쟁</b>: 한국디자인진흥원 디자인분쟁조정위원회에 조정을 신청할 수 있어요(디자인 용역 표준계약서 제16조).</li>
+    </ul></div>
+  <button id="b-fl-recheck" class="btn">읽은 값 다시 확인하기</button>
+  <button id="b-fl-restart" class="btn">처음부터 다시 비교하기</button>
+  <p class="save-hint">결과는 어디에도 저장되지 않아요. 새로고침하거나 창을 닫으면 사라지니, 필요하면 화면을 캡처해 두세요.</p><!-- 사이트 수정 10(2026-11-22) -->
+</section>
+
+<!-- 1. 계약서 점검 시작 (와이어프레임 '계약서 점검 시작') -->
+<section id="s-start" class="screen">
+  <button type="button" class="back-link" id="start-back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg><span id="start-back-label">계약서 점검</span></button>
+  <h2 class="sec">근로계약서 점검</h2>
+  <!-- 생성형 AI 사전 고지(AI 기본법 제31조①, 법적 검토 9번, 사용자 승인 2026-11-21) -->
+  <div class="card guide"><div class="guide-ic" aria-hidden="true"><span class="ic" data-ic="bot"></span></div><p class="muted">이 기능은 <b>생성형 AI(Google Gemini)</b>를 써요. AI는 계약서 글자를 읽기만 하고, 판정은 정해진 규칙(코드)이 해요. AI가 잘못 읽을 수 있어요.</p></div>
+  <!-- 2026-11-23 UI/UX 점검 15: 촬영·선택 버튼을 AI 고지 바로 아래로 올림(고지는 먼저 보이게 유지), label → 진짜 button(키보드·화면 읽기) -->
+  <div class="row start-acts">
+    <button type="button" class="btn primary" data-pick="in-camera">촬영하기</button>
+    <button type="button" class="btn" data-pick="in-file">사진·PDF 선택</button><!-- 사이트 수정 7(2026-11-22): PDF도 -->
+  </div>
+  <input id="in-camera" type="file" accept="image/*" capture="environment" hidden>
+  <input id="in-file" type="file" accept="image/*,application/pdf,.pdf" multiple hidden>
+  <!-- 사이트 수정 4(2026-11-22, 퍼소나 A 5 Whys 시사점 ①): 서명 자리에서 시간이 없으면 사진만 먼저 -->
+  <p class="muted later-hint">지금 확인할 시간이 없으면 휴대폰 카메라로 사진만 찍어 두세요. 나중에 '사진·PDF 선택'으로 점검할 수 있어요.</p>
+  <div class="card guide"><div class="guide-ic" aria-hidden="true"><span class="ic" data-ic="camera"></span></div>
+    <div><b>이렇게 찍어 주세요</b><p class="muted">평평한 곳에 놓고, 정면에서, 조명이 비치지 않게, 계약서 한 장이 화면에 꽉 차게 촬영하세요. 이메일·메신저로 받은 PDF는 '사진·PDF 선택'으로 올리면 돼요. 계약서가 여러 장이면 3장까지 함께 분석해요.</p></div></div>
+  <div class="k-label">샘플 계약서로 먼저 체험해 보기</div>
+  <p class="muted sample-note">샘플은 계약 기간이 2027년까지 이어지는 가상 계약서라, 2027년 최저임금 기준으로도 판정해요.</p><!-- 사이트 수정 15(2026-11-22) -->
+  <button class="tile icon-tile sample" data-sample="samples/A1.jpg"><img src="samples/A1.jpg" alt=""><span><b>기간제 근로계약서</b><span>계약 기간이 정해진 근로 계약 예시</span></span></button>
+  <button class="tile icon-tile sample" data-sample="samples/C2.jpg"><img src="samples/C2.jpg" alt=""><span><b>아르바이트 근로계약서</b><span>단기·시간제 아르바이트 계약 예시</span></span></button>
+  <button class="tile icon-tile sample" data-sample="samples/D2.jpg"><img src="samples/D2.jpg" alt=""><span><b>수습 근로계약서</b><span>수습 기간이 포함된 계약 예시</span></span></button>
+  <div class="card guide"><div class="guide-ic" aria-hidden="true"><span class="ic" data-ic="lock"></span></div>
+    <p class="muted">가리지 않은 사진은 보내지 않아요. 가린 사진과, 여러 장일 때 '개인정보 없음'으로 고른 장(가리지 않은 그대로)만 AI 분석을 위해 Google(미국 회사)의 AI 서비스로 보내져요. 이 서비스 서버에는 사진과 분석 결과를 저장하지 않아요. Google은 유료 이용 데이터를 자사 제품 개선에 쓰지 않지만, 정책 위반 감지를 위해 일정 기간 기록할 수 있어요. 로그인 없이 이용할 수 있어요. <a href="privacy.html" class="pv-link" target="_blank" rel="noopener">개인정보 처리방침</a></p></div>
+</section>
+
+<!-- 1-2. 반사·흐림 경고 (와이어프레임 '반사·흐림 경고 화면') -->
+<section id="s-quality" class="screen">
+  <div class="center-col"><div class="big-ic" aria-hidden="true"><span class="ic" data-ic="alert"></span></div>
+    <h2>사진 품질을 다시 확인해 주세요</h2>
+    <p class="muted">사진에 반사나 흐림이 있어 글자를 정확히 읽기 어려울 수 있어요.</p></div>
+  <div class="card info-plain"><div class="k">감지된 문제</div><div id="q-msg"></div></div>
+  <div class="card info-plain"><div class="k">촬영 안내</div><ul class="plain">
+    <li>평평한 곳에 계약서를 놓고 정면에서 찍어 주세요</li><li>조명이 비치지 않게 해 주세요</li><li>계약서 한 장이 화면에 꽉 차게 찍어 주세요</li></ul></div>
+  <p class="muted center">사진 품질은 휴대폰 안에서만 검사해요</p>
+  <button id="b-retake" class="btn primary">다시 찍기</button>
+  <button id="b-qok" class="btn">이 사진으로 계속</button>
+</section>
+
+
+<!-- 2. 개인정보 가리기 -->
+<section id="s-mask" class="screen">
+  <p id="mask-toast" class="toast" role="status" hidden>분석을 취소했어요. 가린 그대로 다시 보낼 수 있어요.</p>
+  <div class="mask-head">
+    <div><b><span class="ic" data-ic="lock" aria-hidden="true"></span> 개인정보를 가려 주세요</b>
+      <p>이름·주민번호·주소·연락처·계좌를 네모나 붓으로 칠해 주세요. 가리지 않은 장은 보내지 않아요.</p></div>
+    <button id="b-back1" class="link">다시 찍기</button>
+  </div>
+  <!-- 2026-11-22: 여러 장일 때 쪽 이동·빼기·다시 찍기를 한 줄에(휴대폰 확인 의견: 이전 장으로 못 감, 두 버튼이 다른 줄) -->
+  <div id="page-bar" class="page-bar" hidden>
+    <button type="button" id="b-prev-page" class="link">‹ 이전 장</button>
+    <b id="mask-page" class="mask-page"></b>
+    <span class="pb-acts"><button type="button" id="b-del-page" class="link">이 장 빼기</button><button type="button" id="b-page-retake" class="link">다시 찍기</button></span>
+  </div>
+  <p id="mask-note" class="qwarn mask-note" role="status" hidden></p>
+  <div id="stage" class="stage"><canvas id="cv"></canvas></div>
+  <!-- 2026-11-23 UI/UX 점검 14: 도구 두 줄 → 한 줄(작은 휴대폰에서 사진 칸을 넓게) -->
+  <div class="tools one">
+    <div class="seg" role="group" aria-label="도구">
+      <button data-tool="move" class="on" aria-label="이동"><span class="ic" data-ic="move" aria-hidden="true"></span><span class="tl">이동</span></button>
+      <button data-tool="rect" aria-label="네모"><span class="ic" data-ic="square" aria-hidden="true"></span><span class="tl">네모</span></button>
+      <button data-tool="brush" aria-label="붓"><span class="ic" data-ic="brush" aria-hidden="true"></span><span class="tl">붓</span></button>
+    </div>
+    <button id="b-undo" class="tool-btn" aria-label="되돌리기" title="되돌리기"><span class="ic" data-ic="undo" aria-hidden="true"></span></button>
+    <button id="b-zout" class="tool-btn" aria-label="축소">−</button>
+    <button id="b-fit" class="tool-btn" aria-label="전체 보기" title="전체 보기"><span class="ic" data-ic="fit" aria-hidden="true"></span></button>
+    <button id="b-zin" class="tool-btn" aria-label="확대">+</button>
+  </div>
+  <p id="mask-count" class="mask-count" aria-live="polite"></p>
+  <p class="hint"><b>가리기를 완료했나요?</b> 가린 사진('개인정보 없음'으로 고른 장 포함)을 AI 분석을 위해 Google(미국 회사)의 AI 서비스로 보내요.</p>
+  <!-- 2026-11-22: 근로계약서도 여러 장(최대 3장). 쪽마다 가리고 마지막 쪽에서 한 번에 분석 -->
+  <div class="row mask-actions"><button type="button" id="b-add-page" class="btn" hidden>+ 다음 장 추가</button><button id="b-send" class="btn primary">분석하기</button></div>
+  <input id="in-more" type="file" accept="image/*,application/pdf,.pdf" multiple hidden>
+</section>
+
+<!-- 가리지 않으면 분석 막기(대회 규칙: 실제 개인정보를 외부 AI로 보내지 않음. 사용자 확정 2026-11-18)
+     2026-11-22 사용자 결정: 여러 장일 때만 '이 장엔 개인정보가 없어요'로 가리지 않고 보낼 수 있음(계약서마다 가린 장 한 장 이상)
+     브라우저 dialog 기능 대신 일반 레이어: 모든 휴대폰 브라우저에서 동작 -->
+<!-- 사이트 수정 7(2026-11-22): PDF 바꾸는 중 / 쪽 고르기 창(근로계약서 점검은 한 번에 한 쪽) -->
+<!-- 2026-11-23: 결과를 이미지로 저장(카카오톡 등 인쇄 창이 안 뜨는 곳) -->
+<div id="img-ov" class="overlay" hidden role="dialog" aria-modal="true" aria-labelledby="img-t">
+  <div class="overlay-box">
+    <p id="img-t"><b>결과를 이미지로 저장하기</b></p>
+    <p class="muted">아래 이미지를 <b>길게 눌러</b> '이미지 저장'(또는 '사진에 추가')을 고르세요.</p>
+    <img id="img-out" class="img-out" alt="근로계약서 점검 결과 요약 이미지">
+    <a id="img-dl" class="btn" download="알바체커_점검결과.png" hidden>이미지 파일로 받기</a>
+    <button type="button" id="b-img-close" class="btn">닫기</button>
+  </div>
+</div>
+<div id="pdf-ov" class="overlay" hidden role="dialog" aria-modal="true" aria-labelledby="pdf-t">
+  <div class="overlay-box">
+    <p id="pdf-t"><b>PDF 계약서</b></p>
+    <p id="pdf-msg" aria-live="polite"></p>
+    <p class="muted pdf-note">PDF는 휴대폰 안에서 사진으로 바꿔요. 바꾼 사진도 이름·연락처를 가린 뒤(또는 '개인정보 없음'으로 고른 뒤)에만 AI로 보내요.</p>
+    <button id="b-pdf-cancel" class="btn">취소</button>
+  </div>
+</div>
+
+<div id="nomask" class="overlay" hidden role="dialog" aria-modal="true" aria-labelledby="nomask-t">
+  <div class="overlay-box">
+    <p id="nomask-t"><b>아직 아무것도 가리지 않았어요</b></p>
+    <p>개인정보 보호를 위해, 이름·주민번호·주소·연락처를 한 곳 이상 가려야 분석할 수 있어요. <b><span class="ic" data-ic="square" aria-hidden="true"></span> 네모</b>나 <b><span class="ic" data-ic="brush" aria-hidden="true"></span> 붓</b>을 골라 칠해 주세요.</p>
+    <p id="nomask-multi" class="muted nomask-sub" hidden>여러 장 중 이름·주민번호·주소·연락처·계좌·서명이 <b>하나도 없는 장</b>(조항만 있는 장)은 가리지 않고 그대로 보낼 수 있어요. 계약서마다 가린 장이 한 장 이상 있어야 해요.</p>
+    <p id="nomask-all" class="qwarn nomask-sub" hidden>계약서마다 이름·서명이 있는 장을 한 장 이상 가려야 해요. 이 장이나 앞 장에서 개인정보를 가려 주세요.</p>
+    <button id="b-nomask-back" class="btn primary">가리러 가기</button>
+    <button id="b-nomask-nopii" class="btn" hidden>이 장엔 개인정보가 없어요</button>
+  </div>
+</div>
+
+<!-- 3. 분석 중 (와이어프레임 '분석 중 화면'). 본 읽기와 검증 읽기는 서버에서 동시에 진행됨 -->
+<section id="s-wait" class="screen">
+  <div class="center-col"><div class="spinner" aria-hidden="true"></div>
+    <h2>계약서를 분석하고 있어요</h2>
+    <p class="muted">AI가 항목 33개를 두 번 읽고 비교해요. 보통 10초 안팎 걸려요.</p></div>
+  <div class="steps"><div id="st1" class="step">사진 확인</div><div id="st2" class="step">1차 항목 읽기</div><div id="st3" class="step">2차 검증</div></div>
+  <p id="wait-msg" class="center" role="status" aria-live="polite"></p>
+  <p id="wait-sec" class="muted center">0초</p>
+  <p class="muted center">분석이 끝나면 AI가 읽은 값을 보여 드려요. 사진과 분석 결과는 이 서비스 서버에 저장하지 않아요.</p>
+  <button id="b-cancel" class="btn">분석 취소</button>
+</section>
+
+<!-- 3-2. 핵심 값 확인 (와이어프레임 '핵심 값 확인 화면'). 실제 손글씨 시험에서 숫자·체크 오독이 나와 판정 전에 사람이 확인 -->
+<section id="s-confirm" class="screen">
+  <h2 class="sec">계약서 원본과 비교해 주세요</h2><!-- UI 개선 ③ 3차 21 -->
+  <div class="card info-plain">
+    <p class="ai-badge">AI가 읽은 결과입니다. 법률 자문이 아닙니다.</p><!-- 사이트 수정 8(2026-11-22): '생성' 대신 '읽은'(판정은 코드) -->
+    <p class="muted">아래 항목이 원본 내용과 같은지 확인하고, 다르면 직접 고쳐 주세요. 확인한 항목이 많을수록 판정이 정확해져요.</p>
+  </div>
+  <div class="k-label">핵심 항목 확인</div>
+  <!-- 문제 2: 원본과 비교할 수 있게 가린 사진을 보여 줌(휴대폰 화면에만, 서버로 다시 보내지 않음) -->
+  <button type="button" class="card ph-card" id="b-photo" hidden><img id="ck-photo" alt=""><span><b id="ck-photo-t">내 계약서 사진</b><span>눌러서 크게 보며 비교해요(가린 사진, 휴대폰 안에서만 보여요)</span></span></button>
+  <div id="confirm-list"></div>
+  <!-- 2026-11-23 UI/UX 점검 17: 다 맞으면 한 번에 -->
+  <button type="button" id="b-ck-all" class="btn" hidden>남은 항목 모두 원본과 같아요</button>
+  <!-- UI 개선 ③ 문제 12: 진행 상황 + 결과 보기를 화면 아래에 고정 -->
+  <div class="ck-bar"><div class="p" aria-live="polite"><b id="ck-progress"></b><span id="ck-progress-sub"></span></div><button type="button" id="b-photo2" class="btn ck-photo-btn" aria-label="내 계약서 사진 보기" hidden><span class="ic" data-ic="image" aria-hidden="true"></span> 사진</button><button id="b-confirm-go" class="btn primary">결과 보기</button></div><!-- 2026-11-23 UI/UX 점검 9: 어디서든 사진 보기 -->
+</section>
+
+<!-- 값 고치기 창 (핵심 값 확인 화면의 '고치기') -->
+<div id="edit-ov" class="overlay" hidden role="dialog" aria-modal="true" aria-labelledby="edit-t">
+  <div class="overlay-box">
+    <p id="edit-t"><b>값 고치기</b> <span id="edit-name" class="muted"></span></p>
+    <p class="muted">원본 계약서의 실제 값을 입력해 주세요.</p>
+    <div id="edit-body" class="editor"></div>
+    <div class="row"><button id="b-edit-cancel" class="btn">취소</button><button id="b-edit-save" class="btn primary">저장</button></div>
+  </div>
+</div>
+
+<!-- 문제 2: 가린 사진 크게 보기 -->
+<div id="photo-ov" class="overlay photo-ov" hidden role="dialog" aria-modal="true" aria-label="내 계약서 사진 크게 보기">
+  <div class="photo-bar"><button type="button" id="b-photo-zoom" class="mini">크게</button><button type="button" id="b-photo-close" class="mini">닫기</button></div>
+  <div class="photo-scroll" id="photo-scroll"><img id="photo-big" alt="가린 계약서 사진"></div>
+</div>
+
+<!-- 4. 판정 결과 (와이어프레임 '판정 결과 화면') -->
+<section id="s-result" class="screen">
+  <p class="ai-badge">AI가 읽고 코드가 판정한 결과입니다. 법률 자문이 아닙니다.</p><!-- 사이트 수정 8(2026-11-22) -->
+  <!-- 2026-11-23 디자인 ④: 결과 제목 옆 그림(점검표, 흑백, 꾸밈용) -->
+  <svg class="ill ill-res" viewBox="0 0 80 80" aria-hidden="true" focusable="false"><circle class="ill-bg" cx="40" cy="42" r="34"/><rect class="ill-paper" x="20" y="16" width="40" height="52" rx="6"/><rect class="ill-clip" x="31" y="11" width="18" height="10" rx="3"/><path class="ill-ink" d="M27 34l3 3 5-6M27 48l3 3 5-6" style="stroke-width:3"/><path class="ill-line" d="M40 34h12M40 48h12" style="stroke-width:3.5"/></svg>
+  <h2 class="sec">계약서 점검 결과</h2>
+  <p id="res-sub" class="res-sub"></p>
+  <p id="res-date" class="muted"></p>
+  <!-- 사이트 수정 2(2026-11-22): 결과의 기준을 첫머리에 -->
+  <p class="res-basis">내가 확인한 값으로 판정한 결과예요. 사업장 규모(5명 미만 여부)처럼 계약서에 없는 정보는 판정에 넣지 않았어요.</p>
+  <div class="stats">
+    <div class="stat lv-위험"><span>위험</span><b id="n-위험">0건</b></div>
+    <div class="stat lv-주의"><span>주의</span><b id="n-주의">0건</b></div>
+    <div class="stat lv-참고"><span>참고</span><b id="n-참고">0건</b></div>
+  </div>
+  <div class="k-label">판정 항목</div>
+  <!-- 2026-11-23 UI/UX 점검 8: 다시 계산 중·실패 알림 -->
+  <div id="rejudge-msg" class="rejudge-msg" role="status" aria-live="polite" hidden><p id="rejudge-t"></p><button type="button" id="b-rejudge" class="mini" hidden>다시 계산</button></div>
+  <div id="findings"></div>
+  <div class="k-label">핵심 계약 조건 확인</div>
+  <div id="core-list" class="group"></div>
+  <!-- UI 개선 ③ 계약서 점검(2026-11-21, UI개선_03_계약서점검_기획서.md 문제 1): 33개 항목은 접어 두고 눌러서 펼침 -->
+  <button type="button" id="b-fields-toggle" class="fold-btn" aria-expanded="false" aria-controls="fields-wrap"><span id="fields-toggle-t">33개 항목 전체 보기</span><small id="fields-toggle-n"></small><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+  <div id="fields-wrap" hidden>
+    <p class="muted">항목을 고치면 판정이 자동으로 다시 계산됩니다.</p>
+    <div id="summary" class="summary"></div>
+    <div id="fields"></div>
+  </div>
+  <!-- 사이트 수정 3(2026-11-22): 18세 미만 안내(판정은 하지 않음). 근거: 근로기준법 제66조·제69조·제70조 -->
+  <div class="card minor-card info-plain"><b>18세 미만이라면 따로 확인하세요</b>
+    <p class="muted">이 점검은 나이에 따른 규정은 판정하지 않아요. 18세 미만은 이런 규정이 더 있어요.</p>
+    <ul class="plain">
+      <li>사업장에 <b>부모님(친권자) 동의서</b>와 나이를 증명하는 가족관계증명서를 갖춰야 해요(제66조).</li>
+      <li>하루 <b>7시간</b>, 일주일 <b>35시간</b>까지만 일할 수 있어요. 합의하면 하루 1시간, 일주일 5시간까지 더할 수 있어요(제69조).</li>
+      <li><b>밤 10시~아침 6시</b>와 휴일에는 원칙적으로 일할 수 없어요. 본인 동의와 고용노동부 인가가 있어야 해요(제70조).</li>
+    </ul>
+    <p class="muted">근로기준법 기준이에요.</p></div>
+  <button id="b-first-detail" class="btn primary">판정 상세 보기</button>
+  <button class="btn" data-go="s-help">도움받을 곳 안내</button>
+  <button id="b-share" class="btn">커뮤니티에 결과 공유하기</button>
+  <p class="muted center">등급과 항목 이름만 공유돼요. 시급·날짜·회사명 같은 값은 올라가지 않아요.</p>
+  <!-- 2026-11-23 UI/UX 점검 5: 결과 보관(요약 글 복사 · 인쇄 창에서 PDF로 저장). 이 서비스 서버에는 여전히 저장하지 않음 -->
+  <div class="save-acts"><button type="button" id="b-copy-result" class="btn">결과 요약 복사</button><button type="button" id="b-print-result" class="btn">PDF 저장·인쇄</button></div>
+  <p id="copy-status" class="copy-status" role="status" aria-live="polite"></p>
+  <p class="save-hint">결과는 이 서비스 서버에 저장되지 않아요. 새로고침하거나 창을 닫으면 사라지니, 상담이나 증거용으로 쓰려면 위 두 버튼으로 보관하세요.</p><!-- 사이트 수정 10(2026-11-22) -->
+  <button id="b-new-check" class="btn">다른 계약서 점검하기</button><!-- 사이트 수정 16(2026-11-22): 외주 '처음부터 다시 비교하기'와 같은 역할 -->
+  <p class="disclaimer">이 결과는 근로기준법·최저임금법 기준의 자동 판정이며 법률 자문이 아닙니다. 사업장 규모(5명 미만 등)나 실제 근무 사정에 따라 달라질 수 있습니다.</p>
+</section>
+
+<!-- 4-2. 판정 상세 (와이어프레임 '판정 상세 화면') -->
+<section id="s-detail" class="screen">
+  <button type="button" class="back-link" id="d-back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg>판정 결과</button>
+  <h2 id="d-title" class="sec"></h2>
+  <div class="d-head"><span id="d-level" class="lv-chip"></span><span id="d-law" class="muted"></span></div>
+  <div class="card"><div class="k">판정 요약</div><p id="d-detail" class="d-text"></p></div>
+  <div class="card"><div class="k">판정에 사용된 값</div><div id="d-values"></div>
+    <p id="d-unsure" class="qwarn" hidden><span class="ic" data-ic="alert" aria-hidden="true"></span> 읽기 불확실: 이 판정에 쓰인 값 중 AI가 확실히 읽지 못한 항목이 있어요. 원본과 다를 수 있습니다.</p></div>
+  <div class="card"><div class="k">근거 조문</div><div id="d-articles" class="group"></div><p id="d-checked" class="muted"></p></div>
+  <div id="d-topic-card" class="card"><div class="k">관련 법 안내</div><button id="d-topic" class="btn">관련 법 안내 카드 보기</button></div>
+  <div id="d-small" class="card"><div class="k">5인 미만 사업장 단서</div><p class="muted">상시 근로자 5명 미만 사업장에는 일부 조항이 적용되지 않을 수 있습니다.</p></div>
+  <div class="k-label">대응 방법</div>
+  <div class="card info-plain d-act"><b>고용노동부 상담 전화</b><p class="muted">국번 없이 <a class="tel" href="tel:1350" aria-label="1350 전화 걸기">1350</a> (평일 9~18시, 통화료 유료)</p></div>
+  <div class="card info-plain d-act"><b>지방고용노동청 진정</b><p class="muted">임금체불·근로조건 위반은 사업장 관할 지방고용노동청에 진정을 낼 수 있어요.</p></div>
+  <div class="card info-plain d-act"><b>증거 남기기</b><p class="muted">근로계약서 사본, 출퇴근 기록, 급여명세서·통장 입금 내역, 업무 지시 메시지를 보관해 두세요.</p></div>
+  <button class="btn primary" data-go="s-help">도움받을 곳 안내 보기</button>
+  <button class="btn" data-go="s-ask">AI에게 질문하기</button>
+  <p class="disclaimer">이 판정은 법률 자문이 아닙니다. 최종 판단은 전문가에게 확인하세요.</p>
+</section>
+
+<!-- 4-3. 도움받을 곳 (와이어프레임 '도움받을 곳 안내') -->
+<section id="s-help" class="screen">
+  <button type="button" class="back-link" id="h-back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg>뒤로</button>
+  <h2 class="sec">도움받을 곳 안내</h2>
+  <div class="card"><b><span class="ic" data-ic="phone" aria-hidden="true"></span> 고용노동부 상담 전화 <a class="tel" href="tel:1350" aria-label="1350 전화 걸기">1350</a></b>
+    <p class="muted">근로계약·임금·해고 등 근로 관련 문제를 고용노동부 고객상담센터에 전화로 물어볼 수 있어요(국번 없이 1350, 통화료 유료).</p>
+    <p class="muted">운영시간: 평일 09:00–18:00</p>
+    <!-- 사이트 수정 12(2026-11-22): 전화가 부담될 때. 출처 고용노동부 민원신청방법(moel.go.kr/minwon/guid/use_info_A.do) -->
+    <p class="muted">전화가 어렵다면 고용노동부 누리집의 <b>빠른 인터넷 상담</b>에 글로 물어볼 수 있어요(100자 이내 간단한 질문, 본인 확인 필요).</p>
+    <a class="btn ext-btn" href="https://www.moel.go.kr/minwon/fastcounsel/fastcounselList.do" target="_blank" rel="noopener" aria-label="빠른 인터넷 상담 (새 창)">빠른 인터넷 상담 ↗</a></div>
+  <div class="card"><b><span class="ic" data-ic="building" aria-hidden="true"></span> 지방고용노동청 진정</b>
+    <p class="muted">임금체불·근로조건 위반이 의심되면 사업장 관할 지방고용노동청에 진정을 낼 수 있어요. 온라인으로는 고용노동부 <b>노동포털</b>에서 신청해요.</p>
+    <!-- 사이트 수정 11(2026-11-22): 출처 고용노동부 서식민원(moel.go.kr/minwon/apply/formApplyList.do) '진정·신고 … 노동포털' -->
+    <a class="btn ext-btn" href="https://labor.moel.go.kr/" target="_blank" rel="noopener" aria-label="노동포털에서 진정 신청하기 (새 창)">노동포털에서 진정 신청하기 ↗</a></div>
+  <div class="card"><b><span class="ic" data-ic="clip" aria-hidden="true"></span> 증거 남기기</b><ul class="plain">
+    <li><b>근로계약서 사본</b> — 서명 전·후 모두 사진으로 보관하세요.</li>
+    <li><b>급여명세서·통장 입금 내역</b> — 매달 캡처해 두세요.</li>
+    <li><b>출퇴근 기록</b> — 실제 출퇴근 시간과 쉬지 못한 시간을 날짜별로 적어 두세요.</li>
+    <li><b>업무 지시 메시지</b> — 사업주와 나눈 대화는 지우지 말고 저장하세요.</li></ul></div>
+  <p class="disclaimer">이 안내는 법률 자문이 아닙니다. 구체적인 법적 판단은 전문가에게 문의하세요.</p>
+</section>
+
+<!-- 오류·인터넷 끊김 (와이어프레임 '오류·인터넷 끊김 안내') -->
+<section id="s-error" class="screen">
+  <div class="center-col"><div class="big-ic" aria-hidden="true"><span class="ic" data-ic="alert"></span></div>
+    <h2 id="err-title">분석을 끝내지 못했어요</h2>
+    <p id="err-msg" class="muted"></p></div>
+  <button id="b-home" class="btn primary">계약서 점검 시작으로 돌아가기</button>
+  <button id="b-retry" class="btn">다시 시도</button>
+</section>
+
+<!-- 계약서가 아닌 사진 (와이어프레임 '계약서가 아닌 사진 안내') -->
+<section id="s-notcontract" class="screen">
+  <div class="center-col"><div class="big-ic" aria-hidden="true"><span class="ic" data-ic="image"></span></div>
+    <h2>계약서 사진이 아니에요</h2>
+    <p class="muted">올린 사진에서 근로계약서를 찾지 못했어요. 계약서 한 장이 화면에 꽉 차게 다시 찍어 주세요.</p></div>
+  <div class="card info-plain"><div class="k">촬영 안내</div><ul class="plain">
+    <li>평평한 곳에 놓고 정면에서 찍어 주세요</li><li>조명이 비치지 않게 찍어 주세요</li><li>계약서 한 장이 화면에 꽉 차게 찍어 주세요</li></ul></div>
+  <button class="btn primary" data-go="s-start">다른 사진 고르기</button>
+</section>
+
+<!-- 사용량 초과 (와이어프레임 '사용량 초과 안내') -->
+<section id="s-quota" class="screen">
+  <div class="center-col"><div class="big-ic" aria-hidden="true"><span class="ic" data-ic="hourglass"></span></div>
+    <h2>오늘 분석 한도를 모두 썼어요</h2>
+    <p class="muted">계약서 분석은 하루에 정해진 횟수까지만 할 수 있어요. 내일 다시 시도해 주세요.</p></div>
+  <div class="card info-plain"><div class="k">분석 한도 안내</div>
+    <p class="muted">접속 주소당 하루 60건까지 분석할 수 있어요.</p>
+    <p class="muted">서비스 전체 한도에 도달하면 다음 날 다시 이용할 수 있어요.</p></div>
+  <button class="btn primary" data-go="s-learn">법 안내 보기</button>
+  <button class="btn" data-go="s-home">홈으로 가기</button>
+</section>
+
+<!-- 커뮤니티(기획서: 상공회의소 해커톤/커뮤니티_기획서_2026-11-19.md). 로그인 없음, AI 사용 안 함 -->
+<section id="s-comm" class="screen">
+  <div class="sec-h c-top"><h2 class="sec">커뮤니티</h2><button type="button" id="c-mine" class="c-mine" data-board="mine">내 글</button><button type="button" id="c-write" class="w-btn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>글쓰기</button></div>
+  <!-- 2026-11-23 디자인(사용자 선택 B): 머리 높이를 줄이려고 설명 문장 '비슷한 상황의 경험담과 질문을 나눠 보세요' 뺌. 글쓰기 버튼은 오른쪽 아래에 떠 있게(style.css 맨 끝) -->
+  <!-- 2026-11-23 디자인: 구역 구분 띠(B)를 넣으려고 HOT·게시판을 구역(.c-sec)으로 묶음 -->
+  <div class="c-sec">
+  <div class="sec-h c-gap"><h3 class="c-h3">HOT</h3><button class="more" data-board="hot">전체 보기 ›</button></div>
+  <p class="muted c-sub">공감을 3개 이상 받은 글</p>
+  <div id="c-hot" class="c-list"></div>
+  </div>
+  <div class="c-sec">
+  <div class="sec-h c-gap"><h3 class="c-h3">게시판</h3></div>
+  <div id="c-boards" class="c-boards"></div>
+  </div>
+  <p class="disclaimer home-disc">커뮤니티 글은 이용자가 쓴 내용이며 법률 자문이 아닙니다. 정확한 판단은 고용노동부 고객상담센터(국번 없이 <a class="tel" href="tel:1350" aria-label="1350 전화 걸기">1350</a>)에 문의하세요.<span class="disc-links"><a href="policy.html" class="pv-link" target="_blank" rel="noopener">커뮤니티 운영정책</a> · <a href="privacy.html" class="pv-link" target="_blank" rel="noopener">개인정보 처리방침</a></span></p>
+</section>
+
+<!-- 커뮤니티: 게시판 글 목록 -->
+<section id="s-board" class="screen">
+  <button type="button" class="back-link" id="b-back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg>커뮤니티</button>
+  <div class="sec-h"><h2 id="b-title" class="sec"></h2><button type="button" id="b-write" class="w-btn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>글쓰기</button></div>
+  <p id="b-desc" class="muted"></p>
+  <div id="b-topics" class="chips"></div>
+  <div id="b-list" class="c-list"></div>
+  <button id="b-more" class="btn" hidden>더 보기</button>
+</section>
+
+<!-- 커뮤니티: 글 상세 -->
+<section id="s-post" class="screen">
+  <button type="button" class="back-link" id="p-back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg><span id="p-back-label">뒤로</span></button>
+  <p id="p-meta" class="p-meta"></p>
+  <h2 id="p-title" class="p-title"></h2>
+  <p id="p-author" class="muted"></p>
+  <div id="p-body" class="p-body"></div>
+  <div id="p-share" class="p-share" hidden></div>
+  <button id="p-like" class="like-btn"></button>
+  <div id="p-cards-wrap" class="card" hidden><div class="k">관련 법 안내</div><div id="p-cards" class="group"></div></div>
+  <p class="notice small-note info-plain">이용자가 쓴 글이며 법률 자문이 아닙니다. 정확한 판단은 고용노동부 상담 <a class="tel" href="tel:1350" aria-label="1350 전화 걸기">1350</a>(평일 9~18시, 통화료 유료)에 문의하세요.</p>
+  <div id="p-acts" class="p-acts"><button id="p-edit" class="mini">수정</button><button id="p-del" class="mini">삭제</button><button id="p-report" class="mini">신고</button></div>
+  <div class="k-label">댓글 <span id="p-ccount"></span></div>
+  <div id="p-comments" class="c-comments"></div>
+  <div class="card c-form">
+    <div class="row"><label class="f-label">닉네임<input id="cm-nick" maxlength="10" placeholder="2~10자" autocomplete="off"></label>
+      <label class="f-label">댓글 비밀번호<input id="cm-pw" type="password" maxlength="20" placeholder="4~20자" autocomplete="new-password" aria-describedby="cm-pw-help"><span id="cm-pw-help" class="f-help">댓글을 지울 때 필요해요</span></label></div>
+    <label class="f-label">댓글<textarea id="cm-body" maxlength="500" placeholder="2~500자" aria-describedby="cm-body-help"></textarea><span id="cm-body-help" class="f-help">전화번호·이메일·계좌번호 등은 쓸 수 없어요</span></label>
+    <p id="cm-warn" class="qwarn" role="alert" hidden></p>
+    <div class="ask-send"><span id="cm-count" class="muted">0/500</span><button id="cm-send" class="btn primary">댓글 등록</button></div>
+  </div>
+</section>
+
+<!-- 커뮤니티: 글쓰기·수정 -->
+<section id="s-write" class="screen">
+  <button type="button" class="back-link" id="w-back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg>뒤로</button>
+  <h2 id="w-title-h" class="sec">글쓰기</h2>
+  <p id="w-draft" class="w-draft" role="status" hidden>쓰던 글이 그대로 남아 있어요. 등록하면 비워져요.</p>
+  <div class="notice rules"><b>글쓰기 전에 꼭 확인해 주세요</b>
+    <p>· 이름·전화번호·주민번호·계좌·회사명 등 개인정보는 쓰지 마세요(전화·이메일·계좌 형식은 등록이 막혀요).</p>
+    <p>· 특정 가게·회사·사람을 알아볼 수 있게 쓰면서 비방하거나 사생활을 드러내지 마세요. 권리를 침해한 글은 삭제될 수 있어요. <a href="policy.html" class="pv-link" target="_blank" rel="noopener">커뮤니티 운영정책</a></p>
+    <p>· 욕설·비방·광고 글은 신고 3번이면 자동으로 숨겨지고, 되살릴 수 없어요.</p>
+    <p>· 이용자끼리 나누는 이야기이며 법률 자문이 아니에요. 정확한 판단은 <a class="tel" href="tel:1350" aria-label="1350 전화 걸기">1350</a>에 문의하세요.</p></div>
+  <label class="f-label">게시판<select id="w-board"></select></label>
+  <div id="w-topic-wrap"><div class="f-label">말머리</div><div id="w-topics" class="chips"></div></div>
+  <div class="row"><label class="f-label">닉네임<input id="w-nick" maxlength="10" placeholder="2~10자"></label>
+    <label class="f-label">근무 형태(선택)<select id="w-job"><option value="">선택 안 함</option><option>알바</option><option>인턴</option><option>수습</option><option>계약직</option><option>기타</option></select></label></div>
+  <label class="f-label">제목<input id="w-title" maxlength="40" placeholder="2~40자"></label>
+  <label class="f-label">본문<textarea id="w-body" maxlength="2000" placeholder="10~2000자"></textarea></label>
+  <div class="ask-meta"><span>회사명·이름처럼 알아볼 수 있는 정보는 빼고 써 주세요. <a href="privacy.html" class="pv-link" target="_blank" rel="noopener">개인정보 처리방침</a></span><span id="w-count">0/2000</span></div>
+  <div id="w-share-wrap" class="card" hidden><div class="card-h"><div class="k">첨부한 판정 결과 (등급·항목명만)</div><button id="w-share-del" class="link">첨부 빼기</button></div><div id="w-share" class="p-share"></div></div>
+  <label id="w-pw-wrap" class="f-label">글 비밀번호<input id="w-pw" type="password" maxlength="20" placeholder="4~20자 · 수정·삭제할 때 필요해요"></label>
+  <p id="w-warn" class="qwarn" role="alert" hidden></p>
+  <button id="w-send" class="btn primary">등록하기</button>
+</section>
+
+<!-- 커뮤니티: 글 비밀번호 확인 -->
+<section id="s-pw" class="screen">
+  <button type="button" class="back-link" id="pw-back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg>글로 돌아가기</button>
+  <h2 class="sec" id="pw-h">비밀번호 확인</h2>
+  <p class="muted">글을 쓸 때 정한 비밀번호를 입력해 주세요.</p>
+  <label class="f-label">글 비밀번호<input id="pw-in" type="password" maxlength="20" placeholder="4~20자" autocomplete="current-password"></label>
+  <p id="pw-warn" class="qwarn" role="alert" hidden></p>
+  <button id="pw-ok" class="btn primary">확인</button>
+</section>
+
+<!-- 커뮤니티: 신고로 숨겨진 글 -->
+<section id="s-hidden" class="screen">
+  <div class="center-col"><h2>숨겨진 글이에요</h2>
+    <p class="muted">신고가 3번 쌓였거나 권리 침해 삭제 요청이 있어 숨겨졌어요. 숨겨진 글은 다시 볼 수 없어요. <a href="policy.html" class="pv-link" target="_blank" rel="noopener">커뮤니티 운영정책</a></p></div>
+  <button class="btn primary" data-go="s-comm">커뮤니티로 돌아가기</button>
+</section>
+
+<!-- 커뮤니티: 확인 창(삭제 확인·신고·댓글 삭제 비밀번호) -->
+<div id="cm-ov" class="overlay" hidden role="dialog" aria-modal="true" aria-labelledby="cm-ov-t">
+  <div class="overlay-box">
+    <p id="cm-ov-t"><b></b></p>
+    <p id="cm-ov-msg" class="muted"></p>
+    <p id="cm-ov-policy" class="muted" hidden>이 글 때문에 내 명예·사생활 같은 권리가 침해됐다면 운영자에게 삭제를 요청할 수 있어요. <a href="policy.html" class="pv-link" target="_blank" rel="noopener">삭제 요청 방법 보기</a></p>
+    <input id="cm-ov-pw" type="password" maxlength="20" class="f-input" placeholder="댓글 비밀번호" hidden>
+    <p id="cm-ov-warn" class="qwarn" hidden></p>
+    <div class="row"><button id="cm-ov-no" class="btn">취소</button><button id="cm-ov-yes" class="btn primary">확인</button></div>
+  </div>
+</div>
+</main>
+
+<!-- 공통 하단 탭(와이어프레임 공통 틀) -->
+<nav class="tabbar" aria-label="주요 메뉴">
+  <button data-tab="s-home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>홈</button>
+  <button data-tab="s-learn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H20v16H5.5A1.5 1.5 0 0 0 4 20.5z"/><path d="M4 20.5A1.5 1.5 0 0 0 5.5 22H20"/></svg>법 안내</button>
+  <button data-tab="s-check"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5"/><path d="m9 14 2 2 4-4"/></svg>계약서 점검</button>
+  <button data-tab="s-comm"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 20v-1.5a3.5 3.5 0 0 0-3.5-3.5h-3A3.5 3.5 0 0 0 7 18.5V20"/><circle cx="12" cy="8" r="3.5"/><path d="M20 19v-1a3 3 0 0 0-2.2-2.9M16.5 4.6a3.5 3.5 0 0 1 0 6.8"/></svg>커뮤니티</button>
+</nav>
+
+
+<script src="quality.js?v=20261123q"></script>
+<script src="pdfpages.js?v=20261123q"></script>
+<script src="app.js?v=20261123q"></script>
+<script src="learn.js?v=20261123q"></script>
+<script type="module">import { findPII } from './pii.js?v=20261123q'; window.findPII = findPII;</script>
+<script src="ask.js?v=20261123q"></script>
+<script src="comm.js?v=20261123q"></script>
+<script src="freelance.js?v=20261123q"></script>
+</body>
+</html>

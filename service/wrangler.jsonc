@@ -1,0 +1,26 @@
+// Cloudflare Workers 설정. API 키는 여기 적지 않는다(로컬: .dev.vars / 배포: wrangler secret put GEMINI_API_KEY).
+{
+  "name": "contract-check",
+  "main": "src/index.js",
+  "compatibility_date": "2026-11-01",
+  // Gemini는 일부 지역(예: 홍콩)에서 오는 요청을 거절함("User location is not supported", 2026-11-18 확인)
+  // → Worker 코드는 서울 지역에서 실행되게 지정
+  "placement": { "mode": "targeted", "region": "gcp:asia-northeast3" },
+  // 휴대폰 웹 화면(정적 파일). /api/* 는 Worker 코드가 처리
+  "assets": { "directory": "./public", "run_worker_first": ["/api/*"] },
+  // 하루 사용량 집계용 저장소(2026-11-18 생성)
+  "kv_namespaces": [{ "binding": "USAGE", "id": "9f7e7a84b4a2495b9407c62c52230ac5" }],
+  // 커뮤니티 저장소(D1, 2026-11-19 생성, APAC)
+  "d1_databases": [{ "binding": "DB", "database_name": "comm", "database_id": "8f809ea4-a102-42a7-a930-a1688e2db692", "migrations_dir": "migrations" }],
+  "vars": {
+    "DAILY_LIMIT": "600",      // 하루 전체 분석 요청 상한(2026-11-21 200→300, 2026-11-23 300→600, 사용자 결정). 요청 1건 = Gemini 호출 2건(두 번 읽기). 유료 Tier 1
+    "PER_IP_LIMIT": "60",      // 접속 주소 하나당 하루 상한(2026-11-21 30→60: 심사위원이 같은 네트워크를 쓸 경우 대비)
+    "ASK_PER_IP_LIMIT": "300", // AI 질문: 접속 주소당 하루 상한(2026-11-18 30 → 2026-11-21 60 → 2026-11-23 300, 사용자 결정. 같은 날 전체 상한도 600으로 올림)
+    "ASK_DAILY_LIMIT": "600",  // AI 질문: 하루 전체 상한(비용 안전장치, 2026-11-23 300→600 사용자 결정)
+    "MODEL": "gemini-3.1-flash-lite",
+    "FALLBACK_MODEL": "gemini-3.5-flash-lite"
+  },
+  // 프롬프트 .txt 파일을 문자열로 불러온다
+  "triggers": { "crons": ["0 18 * * *"] }, // 매일 03:00(한국 시각) 48시간 지난 사용량 기록 삭제(2026-11-21)
+  "rules": [{ "type": "Text", "globs": ["**/*.txt"], "fallthrough": true }]
+}
