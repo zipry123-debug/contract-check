@@ -23,10 +23,10 @@
 
 <table>
 <tr>
-<td align="center" width="25%"><h2>98.3%</h2>읽기 정확도</td>
-<td align="center" width="25%"><h2>0.4%</h2>표시 없는 오답</td>
-<td align="center" width="25%"><h2>0장</h2>서버 저장 사진</td>
-<td align="center" width="25%"><h2>$0.0059</h2>1건 분석 비용</td>
+<td align="center"><h2>98.3%</h2>읽기 정확도</td>
+<td align="center"><h2>0.4%</h2>표시 없는 오답</td>
+<td align="center"><h2>0장</h2>서버 저장 사진</td>
+<td align="center"><h2>$0.0059</h2>1건 분석 비용</td>
 </tr>
 </table>
 
