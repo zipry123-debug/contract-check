@@ -21,7 +21,7 @@
 ## 2. 전체 구조
 
 ```mermaid
-flowchart LR
+flowchart TB
   subgraph Phone["휴대폰 브라우저 (service/public)"]
     A["촬영·사진·PDF<br/>pdfpages.js"] --> B["반사·흐림 검사<br/>quality.js"]
     B --> C["개인정보 가리기<br/>app.js"]
