@@ -24,7 +24,7 @@
 <table>
 <tr>
 <td align="center" width="25%"><h2>98.3%</h2>근로계약서 33개 항목<br>읽기 정확도</td>
-<td align="center" width="25%"><h2>0.4%</h2>표시 없이 틀린 값<br><sub>한 번 읽기 0.8~0.9%의 절반 이하</sub></td>
+<td align="center" width="25%"><h2>0.4%</h2>표시 없이 틀린 값<br><sub>한 번 읽기의 절반 이하</sub></td>
 <td align="center" width="25%"><h2>0장</h2>서버에 남는 사진<br><sub>휴대폰에서 가린 뒤에만 전송</sub></td>
 <td align="center" width="25%"><h2>$0.0059</h2>외주 계약서 1개<br>두 번 읽기 평균 비용</td>
 </tr>
