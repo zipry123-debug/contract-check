@@ -68,7 +68,7 @@ const NF = {
     acts: `${TEL}${ASK_WEB}<button type="button" class="btn" data-go="s-learn">법 안내에서 주제 보기</button>`,
     foot: '1350은 국번 없이 걸고 통화료가 있어요. 근로시간·주휴수당·최저임금·퇴직금·실업급여 같은 주제는 바로 답할 수 있어요.' },
   offtopic: {
-    why: '알바체커는 근로계약·임금·근로시간처럼 일하는 사람의 권리에 관한 질문에 답해요.',
+    why: '계약스캔은 근로계약·임금·근로시간처럼 일하는 사람의 권리에 관한 질문에 답해요.',
     acts: '<button type="button" class="btn" data-go="s-learn">법 안내에서 주제 보기</button>',
     foot: '예: "주휴수당은 언제 받을 수 있나요?", "퇴직금은 언제까지 받아야 하나요?"' },
 };

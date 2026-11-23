@@ -14,6 +14,7 @@ const TAB_OF = { 's-home': 's-home', 's-learn': 's-learn', 's-topic': 's-learn',
   's-fl-setup', 's-fl-upload', 's-fl-wait', 's-fl-check', 's-fl-result']
   .forEach(s => (TAB_OF[s] = 's-check'));
 ['s-board', 's-post', 's-write', 's-pw', 's-hidden'].forEach(s => (TAB_OF[s] = 's-comm'));
+['s-ask', 's-unknown'].forEach(s => (TAB_OF[s] = 's-ask')); // 2026-11-23 구성 변경: AI 질문 탭
 // 하단 탭 강조 + 화면 읽기 프로그램용 현재 탭 표시(aria-current, 2026-11-21 UI 개선 ① 문제 4)
 function markTab(tab) {
   document.querySelectorAll('[data-tab]').forEach(b => {
@@ -445,7 +446,7 @@ async function analyze(payload) {
     renderResult(data.result);
     renderFindings(data.findings ?? []);
     expandFields(false);
-    renderConfirm();
+    ckMode(false); resMode(false); renderConfirm();
     show('s-confirm');
   } catch (e) {
     if (ctl.signal.aborted && ctl.signal.reason !== 'timeout') return; // 사용자가 취소함
@@ -505,12 +506,10 @@ $('b-nomask-nopii').addEventListener('click', () => {
 document.querySelectorAll('[data-go="s-start"], #in-camera, #in-file, [data-sample]').forEach(el => el.addEventListener('click', () => setMaskMode(null)));
 $('b-nomask-back').addEventListener('click', () => { nomask(false); document.querySelector('[data-tool="rect"]').click(); });
 $('b-retry').addEventListener('click', () => errCtx.retry?.());
-// 사이트 수정 22(2026-11-22): 홈 '샘플 계약서로 먼저 체험하기' → 근로계약서 점검 시작의 샘플 목록으로(홈에서 들어왔으니 뒤로는 '홈')
-$('b-home-sample').addEventListener('click', () => { show('s-start'); const k = document.querySelector('#s-start .k-label'); window.scrollTo(0, k.getBoundingClientRect().top + window.scrollY - 70); });
 // 사이트 수정 16(2026-11-22): 결과 화면 '다른 계약서 점검하기' → 근로계약서 점검 시작
 $('b-new-check').addEventListener('click', () => {
   // 2026-11-23 UI/UX 점검 7: 지금 결과는 저장되지 않으므로 한 번 묻기
-  if (!confirm(`지금 결과는 사라져요. 필요하면 먼저 '결과 요약 복사'나 '${$('b-print-result').textContent}'를 해 두세요. 새 계약서를 점검할까요?`)) return;
+  if (!confirm(`지금 결과는 사라져요. 필요하면 먼저 '결과 요약 복사'나 '${$('print-label').textContent}'를 해 두세요. 새 계약서를 점검할까요?`)) return;
   show('s-start');
 });
 $('b-home').addEventListener('click', () => (errCtx.back ? errCtx.back[1]() : show(maskMode ? 's-fl-upload' : 's-start')));
@@ -520,19 +519,27 @@ let lastFindings = [];
 const firstSentence = s => (String(s).match(/^.*?[.!?](?=\s|$)/) ?? [s])[0];
 function renderFindings(list) {
   lastFindings = list;
-  for (const lv of ['위험', '주의', '참고']) $('n-' + lv).textContent = `${list.filter(f => f.level === lv).length}건`;
-  $('findings').innerHTML = list.length ? list.map((f, i) => `<div class="f-item lv-${f.level}"><span class="lv-badge">${f.level}</span>
-      <div class="f-body"><b>${esc(f.title)}</b>${f.unsure ? ' <span class="tag check"><span class="ic" data-ic="alert" aria-hidden="true"></span> 읽기 불확실</span>' : ''}<div class="muted">${esc(firstSentence(f.detail))}</div></div>
-      <button class="mini" data-detail="${i}">상세 보기</button></div>`).join('')
+  for (const lv of ['위험', '주의', '참고']) $('n-' + lv).textContent = `${list.filter(f => f.level === lv).length}`;
+  // 2026-11-23 구성 변경: 등급별 묶음(위험·주의 / 참고) + 카드에 근거 조문 + '상세 보기 ›'. 인쇄 때 카드가 보이도록 카드는 div, 버튼은 안쪽에만
+  const card = (f, i) => `<div class="f-item rd-f lv-${f.level}${i === 0 ? ' c-open' : ''}"><div class="rd-fh" role="button" tabindex="0" aria-expanded="${i === 0}"><b>${esc(f.title)}${f.unsure ? ' <span class="tag check"><span class="ic" data-ic="alert" aria-hidden="true"></span> 읽기 불확실</span>' : ''}</b><span class="rd-lv"><i aria-hidden="true"></i>${f.level}</span></div>
+      <p>${esc(firstSentence(f.detail))}</p>${f.law ? `<div class="rd-law">근거 조문 · ${esc(f.law)}</div>` : ''}
+      <button class="rd-more" data-detail="${i}">대응 방법 보기 ›</button></div>`;
+  const ix = list.map((f, i) => [f, i]), g1 = ix.filter(([f]) => f.level !== '참고'), g2 = ix.filter(([f]) => f.level === '참고');
+  $('findings').innerHTML = list.length
+    ? (g1.length ? '<div class="rd-g"><b>확인이 필요한 조항</b><small>법 기준보다 불리할 수 있어요</small></div>' + g1.map(([f, i]) => card(f, i)).join('') : '')
+      + (g2.length ? '<div class="rd-g"><b>참고하세요</b><small>상황에 따라 달라질 수 있어요</small></div>' + g2.map(([f, i]) => card(f, i)).join('') : '')
     : '<div class="card"><p>법 기준과 비교해 눈에 띄는 문제를 찾지 못했어요. 그래도 아래 읽은 내용이 원본과 같은지 확인해 주세요.</p></div>';
   $('b-first-detail').hidden = !list.length;
 }
-$('findings').addEventListener('click', e => { const b = e.target.closest('[data-detail]'); if (b) openDetail(+b.dataset.detail); });
+// 2026-11-23 21번 구성안 C: 판정 카드 머리를 누르면 펼치기·접기(첫 카드만 펼친 채 시작)
+const toggleF = h => { const c = h.closest('.rd-f'); const on = c.classList.toggle('c-open'); h.setAttribute('aria-expanded', on); };
+$('findings').addEventListener('click', e => { const b = e.target.closest('[data-detail]'); if (b) return openDetail(+b.dataset.detail); const h = e.target.closest('.rd-fh'); if (h) toggleF(h); });
+$('findings').addEventListener('keydown', e => { const h = e.target.closest('.rd-fh'); if (h && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); toggleF(h); } });
 // 2026-11-23 UI/UX 점검 5: 결과 보관 — 요약 글 복사(메모·메신저에 붙여 넣기), 인쇄 창(휴대폰에서 'PDF로 저장' 선택)
 function resultSummary() {
   const r = current?.result ?? {}, v = n => r[n]?.value;
   const cnt = ['위험', '주의', '참고'].map(lv => `${lv} ${lastFindings.filter(f => f.level === lv).length}건`).join(' · ');
-  const lines = [`알바체커 근로계약서 점검 결과 (${new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10)})`, $('res-sub').textContent, cnt, ''];
+  const lines = [`계약스캔 근로계약서 점검 결과 (${new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10)})`, $('res-sub').textContent, cnt, ''];
   if (!lastFindings.length) lines.push('법 기준과 비교해 눈에 띄는 문제를 찾지 못했어요.', '');
   lastFindings.forEach(f => lines.push(`[${f.level}] ${f.title}`, `- ${f.detail}`, `- 근거: ${f.law}`, ''));
   lines.push('핵심 계약 조건');
@@ -549,7 +556,7 @@ async function copyText(t) {
 }
 $('b-copy-result').addEventListener('click', async () => {
   const ok = await copyText(resultSummary());
-  $('copy-status').textContent = ok ? '결과 요약을 복사했어요. 메모·메신저에 붙여 넣어 보관하세요.' : `이 브라우저에서는 복사가 안 돼요. '${$('b-print-result').textContent}'를 이용해 주세요.`;
+  $('copy-status').textContent = ok ? '결과 요약을 복사했어요. 메모·메신저에 붙여 넣어 보관하세요.' : `이 브라우저에서는 복사가 안 돼요. '${$('print-label').textContent}'를 이용해 주세요.`;
 });
 // 2026-11-23 사용자 휴대폰 확인: 'PDF로 저장·인쇄'를 눌러도 화면이 안 뜸 — [추정] 카카오톡 등 앱 안 브라우저·일부 브라우저는 window.print()가 아무것도 안 함.
 // 인쇄 창이 실제로 열리면 beforeprint가 옴 → 1.5초 안에 안 오면 안내(근본 해결은 '이미지로 저장' 등, 인수인계 참고)
@@ -563,7 +570,7 @@ if (IN_APP) {
   $('inapp-note').hidden = closed; // (버튼 이름은 아래에서 '이미지로 저장')
   $('inapp-name').textContent = IS_KAKAO ? '카카오톡 안에서 열려 있어요.' : '앱 안에서 열려 있어요.';
   $(IS_KAKAO ? 'b-open-ext' : 'inapp-how').hidden = false;
-  $('b-print-result').textContent = '이미지로 저장';
+  $('print-label').textContent = '이미지로 저장';
 }
 // 카카오톡 외부 브라우저 열기 주소(공식 문서 아님, 커뮤니티 예시 — 실기기 확인 필요)
 $('b-inapp-close').addEventListener('click', () => {
@@ -716,9 +723,9 @@ function renderResult(r) {
       // 확인이 필요한 이유(두 번 읽기 불일치·규칙 검사)와 다르게 읽힌 값
       const why = (f.reasons ?? []).map(t => `<div class="why">${esc(t)}</div>`).join('');
       const alt = f.alt !== undefined ? `<div class="why">다르게 읽힌 값: ${esc(fmt(n, f.alt))}</div>` : '';
-      // 주황색 항목은 '맞아요/고치기' 버튼 줄, 나머지는 이름 옆 작은 '고치기'
-      const acts = check ? `<div class="acts"><button class="mini" data-ok="${n}">원본과 같아요</button><button class="mini" data-edit="${n}">고치기</button></div>` : '<div class="acts" hidden></div>';
-      const link = check ? '' : `<button class="link" data-edit="${n}">고치기</button>`;
+      // 2026-11-23 사용자 선택: '원본과 같아요' 뺌(값 확인 화면과 같게), 모든 줄 이름 옆 '고치기' — 평소엔 숨기고 핵심 계약 조건 [수정하기]를 누르면 보임
+      const acts = '<div class="acts" hidden></div>';
+      const link = `<button class="link" data-edit="${n}">고치기</button>`;
       return `<div class="item${check ? ' check' : ''}" id="it-${n}"><div class="k"><span>${LABEL[n] ?? n}</span><span class="kr">${tag}${link}</span></div><div class="v">${esc(fmt(n, f.value))}</div>${raw}${why}${alt}${acts}</div>`;
     }).join('');
     return `<div class="group"><h2>${title}</h2>${title === '사회보험' ? insuranceAsk(r) : ''}${items}</div>`;
@@ -754,17 +761,19 @@ function renderConfirm() {
     const f = r[n], check = needsCheck(f);
     const tag = f.edited ? '<span class="tag ok">고침</span>' : f.confirmed ? '<span class="tag ok">원본과 같음</span>' : check ? '<span class="tag check">확인 필요</span>' : '';
     const why = check ? `<div class="why-box">${f.alt !== undefined ? `<div>다르게 읽힌 값: ${esc(fmt(n, f.alt))}</div>` : ''}${(f.reasons ?? ['AI가 확실히 읽지 못했어요']).map(x => `<div>이유: ${esc(x)}</div>`).join('')}</div>` : '';
-    return `<div class="card ck${check ? ' check' : ''}" id="ck-${n}"><div class="ck-h"><span class="k">${LABEL[n] ?? n}</span>${tag}</div>
+    // 2026-11-23 사용자 요청: 항목마다 카드 → 한 상자 안의 줄(이름·버튼 한 줄, 값은 아래). 읽는 순서는 이름→값→버튼 그대로
+    return `<div class="item ckr${check ? ' check' : ''}" id="ck-${n}"><div class="k"><span>${LABEL[n] ?? n}</span>${tag}</div>
       <div class="v">${esc(fmt(n, f.value))}</div>${why}
-      <div class="acts"><button class="chip" data-cok="${n}">원본과 같아요</button><button class="mini" data-cedit="${n}">고치기</button></div></div>`;
+      <div class="acts"><button class="mini" data-cedit="${n}">고치기</button></div></div>`;
   }).join('');
   const bools = names.filter(isBool);
   const ins = bools.length ? `<div class="card"><div class="k">사회보험 가입 여부</div>${bools.map(n => `<div class="ins-row"><span>${n}</span><div class="seg2">${[true, false].map(v =>
     `<button data-bool="${n}" data-v="${v}" class="${r[n].value === v ? 'on' : ''}">${fmt(n, v)}</button>`).join('')}</div></div>`).join('')}</div>` : '';
-  $('confirm-list').innerHTML = cards + ins;
+  $('confirm-list').innerHTML = (cards ? `<div class="group">${cards}</div>` : '') + ins;
   // 진행 상황(문제 12): 확인·고친 항목 수, 확인 필요 항목 수
-  const done = names.filter(n => r[n].confirmed || r[n].edited).length, need = names.filter(n => needsCheck(r[n])).length;
-  $('ck-progress').textContent = `${names.length}개 중 ${done}개 확인`;
+  // 2026-11-23 사용자 요청: '원본과 같아요' 버튼 뺌(같으면 그대로 두면 됨) → 진행은 고친 개수만
+  const done = names.filter(n => r[n].edited).length, need = names.filter(n => needsCheck(r[n])).length;
+  $('ck-progress').textContent = `${names.length}개 중 ${done}개 고침`;
   $('ck-progress-sub').textContent = need ? `확인 필요 ${need}개 · 확인하지 않아도 결과를 볼 수 있어요` : '다 확인하지 않아도 결과를 볼 수 있어요';
   // 원본과 비교할 수 있게 보낸(가린) 사진을 보여 줌 — 휴대폰 화면에만 그림(2026-11-21 UI 개선 ③ 문제 2)
   const shots = [].concat(lastPayload ?? []).filter(Boolean);
@@ -774,19 +783,25 @@ function renderConfirm() {
     $('photo-scroll').innerHTML = shots.map((u, i) => `<img src="${u}" alt="가린 계약서 사진 ${i + 1}장">`).join('');
   }
   $('b-photo').hidden = !shots.length; $('b-photo2').hidden = !shots.length; // UI/UX 점검 9: 아래 고정 막대에도 '사진 보기'
-  $('b-ck-all').hidden = !names.some(n => !r[n].confirmed && !r[n].edited); // UI/UX 점검 17
 }
+// 2026-11-23 사용자 선택(대안 4): [수정하기]를 눌러야 줄마다 '고치기'가 보임, 누른 상태에선 '완료'
+function ckMode(on) {
+  $('s-confirm').classList.toggle('editing', on);
+  $('b-ck-mode').setAttribute('aria-pressed', String(on)); $('b-ck-mode').textContent = on ? '완료' : '수정하기';
+}
+$('b-ck-mode').addEventListener('click', () => ckMode(!$('s-confirm').classList.contains('editing')));
+// 2026-11-23 사용자 선택: 결과 화면도 같은 방식, [수정하기]는 '핵심 계약 조건' 제목 줄에 1개 — 핵심 조건·33개 항목의 '고치기'를 함께 보이게 함
+function resMode(on) {
+  $('s-result').classList.toggle('editing', on);
+  $('b-res-mode').setAttribute('aria-pressed', String(on)); $('b-res-mode').textContent = on ? '완료' : '수정하기';
+}
+$('b-res-mode').addEventListener('click', () => resMode(!$('s-result').classList.contains('editing')));
 const photoOpen = open => {
   $('photo-ov').hidden = !open; $('photo-ov').classList.remove('zoom'); $('b-photo-zoom').textContent = '크게';
   if (open) $('b-photo-close').focus(); else $('b-photo').focus();
 };
 $('b-photo').addEventListener('click', () => photoOpen(true));
 $('b-photo2').addEventListener('click', () => photoOpen(true));
-$('b-ck-all').addEventListener('click', () => {
-  const r = current.result, left = keyFields().filter(n => !r[n].confirmed && !r[n].edited);
-  if (!left.length || !confirm(`남은 ${left.length}개 항목이 모두 계약서 원본과 같은지 한 번 더 확인했나요? 숫자(시급·날짜·시간)는 특히 원본과 비교해 주세요.`)) return;
-  left.forEach(n => settleKey(n, { confirmed: true })); renderConfirm();
-});
 $('b-photo-close').addEventListener('click', () => photoOpen(false));
 $('b-photo-zoom').addEventListener('click', () => { const z = $('photo-ov').classList.toggle('zoom'); $('b-photo-zoom').textContent = z ? '화면에 맞추기' : '크게'; });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('photo-ov').hidden) photoOpen(false); });
@@ -802,7 +817,6 @@ $('confirm-list').addEventListener('click', e => {
   const d = e.target.closest('button')?.dataset ?? {};
   const r = current.result;
   if (d.bool) { const v = d.v === 'true'; settleKey(d.bool, r[d.bool].value !== v ? { value: v, edited: true } : { confirmed: true }); renderConfirm(); }
-  if (d.cok) { settleKey(d.cok, { confirmed: true }); renderConfirm(); }
   if (d.cedit) {
     editing = d.cedit;
     $('edit-name').textContent = LABEL[d.cedit] ?? d.cedit;
@@ -889,7 +903,6 @@ function settle(n, patch) {
 }
 $('fields').addEventListener('click', e => {
   const d = e.target.dataset ?? {};
-  if (d.ok) settle(d.ok, { confirmed: true });
   if (d.edit) {
     const box = $('it-' + d.edit), f = current.result[d.edit], t = current.types[d.edit];
     box.querySelector('.acts').outerHTML = `<div class="editor">${editorHtml(d.edit, f, t)}<div class="acts"><button class="mini primary" data-save="${d.edit}">저장</button><button class="mini" data-cancel="1">취소</button></div></div>`;
@@ -920,6 +933,7 @@ const ICONS = {
   bot: '<rect x="4" y="8" width="16" height="12" rx="2"/><path d="M12 8V4M9 13v2M15 13v2"/>',
   file: '<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/>',
   scale: '<path d="M12 3v18M7 21h10M4 7h16M7 7l-3 7a3 3 0 0 0 6 0zM17 7l-3 7a3 3 0 0 0 6 0z"/>',
+  docscheck: '<path d="M8.5 8V4h8l3.5 3.5V16h-3M5 8h8l3 3v9H5z"/><path d="M8 15l2 2 3.5-4"/>', // 2026-11-23 21번: 외주·연재 비교(겹친 문서와 체크, 사용자 그림 icon_겹친문서_체크.svg)
   bulb: '<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.5 1 2.5h6c0-1 .2-1.7 1-2.5A6 6 0 0 0 12 3z"/>',
   lock: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
   pen: '<path d="M12 19l7-7 3 3-7 7z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18z"/><path d="M2 2l7.6 7.6"/><circle cx="11" cy="11" r="2"/>',

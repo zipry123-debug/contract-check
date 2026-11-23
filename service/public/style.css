@@ -244,7 +244,6 @@ body { padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
 .h-steps li { display: flex; align-items: center; gap: 12px; font-size: 14px; color: #e5e5e5; }
 .h-steps span { width: 24px; height: 24px; flex: none; border-radius: 50%; border: 1px solid #525252; display: grid; place-items: center; font-size: 12px; font-weight: 700; color: #fff; }
 .hero-cta { margin-top: 20px; width: 100%; height: 52px; border: 0; border-radius: 9px; corner-shape: squircle; background: #fff; color: #0a0a0a; font: inherit; font-size: 16px; font-weight: 700; cursor: pointer; }
-.hero-note { margin: 10px 0 0; font-size: 12px; color: #a3a3a3; text-align: center; }
 .home-sec { margin-top: 40px; }
 .sec-h { display: flex; align-items: baseline; justify-content: space-between; }
 .home-sec h3 { font-size: 19px; font-weight: 700; letter-spacing: -0.03em; margin: 0; }
@@ -579,7 +578,7 @@ input.is-err, textarea.is-err, select.is-err { border-color: var(--danger); }
 /* 8: 홈 맨 아래 1350·개인정보 처리방침 — 보이는 글자는 그대로, 누르는 높이 44px. 처리방침은 한 줄 아래로 띄워 범위가 안 겹치게 */
 #s-home .home-disc a.tel { display: inline-block; padding: 12.5px 2px; margin: -12.5px 0; }
 #s-home .home-disc .pv-link { display: table; padding: 12.5px 0; margin: 15px 0 -12.5px; }
-/* 9: 상단 '알바체커'(홈으로) — 누르는 높이 44px, 위치·모양 그대로 */
+/* 9: 상단 '계약스캔'(홈으로) — 누르는 높이 44px, 위치·모양 그대로 */
 #b-top { display: inline-block; padding: 8.5px 6px; margin: -8.5px -6px; }
 
 /* ===== UI 개선 ② 3차 (2026-11-21, UI개선_02_법안내_기획서.md 2-3) ===== */
@@ -638,9 +637,6 @@ input.is-err, textarea.is-err, select.is-err { border-color: var(--danger); }
 /* 21: 근로 시작·외주 올리기·AI 질문의 '개인정보 처리방침' 누르는 높이 44px 이상(글자 모양 그대로) */
 :is(#s-start, #s-fl-upload) .guide .pv-link { display: inline-block; padding: 12.5px 2px; margin: -12.5px 0 -12.5px 2px; }
 #s-ask .ask-meta .pv-link { display: inline-block; padding: 13px 2px; margin: -13px 0 -13px 2px; }
-/* 22: 홈 샘플 바로가기(예전 안내 글자 자리, 44px) */
-button.hero-note { display: block; width: 100%; min-height: 44px; margin: 4px 0 -10px; padding: 0; background: none; border: 0; font: inherit; font-size: 13px; color: #d4d4d4; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-button.hero-note:active { opacity: .7; }
 /* ===== 2026-11-22 AI 질문: 답하기 어려울 때 이유별 안내(같은 자리) ===== */
 .nf-card { margin-top: 14px; }
 .nf-card h3 { font-size: 17px; margin: 12px 0 6px; letter-spacing: -.02em; }
@@ -754,8 +750,6 @@ input.is-err, textarea.is-err, select.is-err { border-color: var(--danger) !impo
 #s-mask .mask-head p { font-size: 13px; }
 /* 15: 시작 화면 촬영 버튼 */
 #s-start .start-acts { margin: 0 0 4px; }
-/* 17 */
-#b-ck-all[hidden] { display: none; }
 /* 18: 버튼·입력도 본문 글꼴(기기 기본 Arial 대신) */
 button, input, select, textarea { font-family: inherit; }
 /* 20: 키보드 초점 테두리, 움직임 줄이기 */
@@ -849,3 +843,337 @@ body[data-screen="s-comm"] { padding-bottom: calc(132px + env(safe-area-inset-bo
 #s-article .card:has(#a-version), #a-small.notice, #a-note.notice, #s-topic .card:has(.disclaimer-b) { margin: 14px 0; }
 /* ⑥ 보완: 어두운 모드에서 목록·댓글을 묶는 회색 상자가 '글 없음'만 있을 때도 보이던 것 → 그때는 상자 없이 */
 :root .c-list:has(> .empty:only-child), :root .c-comments:has(> .empty:only-child) { background: none; padding: 0; }
+
+/* 2026-11-23 사용자 요청: 값 확인(근로·외주) 항목을 카드 여러 개 → 한 상자 안의 줄로. 이름·버튼은 한 줄, 값은 그 아래 전체 폭.
+   화면 읽기 순서(이름→값→이유→버튼)는 HTML 그대로 두고 grid 배치만 바꿈 */
+.item.ckr { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "k a" "v a" "w w"; /* 11-23 '원본과 같아요' 뺀 뒤: 고치기는 이름·값 두 줄 오른쪽 가운데 */ column-gap: 10px; align-items: center; padding: 8px 14px 10px; }
+.item.ckr > .k { grid-area: k; justify-content: flex-start; flex-wrap: wrap; align-items: center; gap: 2px 6px; font-size: 13.5px; }
+.item.ckr > .acts { grid-area: a; margin: 0; flex-wrap: nowrap; }
+.item.ckr > .v { grid-area: v; margin-top: 2px; }
+.item.ckr > .why, .item.ckr > .why-box { grid-area: w; margin-top: 4px; }
+#confirm-list .item.ckr > .v { font-size: 16px; font-weight: 700; }
+#confirm-list .item.ckr > .why-box { padding: 0; background: none; }
+#confirm-list .group { margin-bottom: 12px; }
+
+/* 2026-11-23 사용자 선택(대안 4): 값 확인 화면(근로·외주) 평소엔 줄마다 '고치기'를 숨기고, 위 [수정하기]를 누르면(.editing) 보임 */
+.ed-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin: 12px 0 6px; }
+.ed-head .k-label { margin: 0; }
+.ed-toggle { min-height: 44px; padding: 0 16px; flex: none; }
+.ed-toggle[aria-pressed="true"] { background: var(--brand); color: var(--brand-text); border-color: var(--brand); }
+#s-confirm:not(.editing) #confirm-list .item.ckr > .acts, #s-fl-check:not(.editing) #fl-check-body .item.ckr > .acts { display: none; }
+
+/* 2026-11-23 사용자 요청: 커뮤니티 '닉네임 저장' 체크 칸(글쓰기·댓글). .c-form input 규칙(폭 100%·테두리)을 체크 칸에선 되돌림 */
+.nick-save { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin-top: 4px; font-size: 14px; color: var(--text2); cursor: pointer; }
+.nick-save[hidden] { display: none; }
+.nick-save input[type="checkbox"] { width: 20px; height: 20px; margin: 0; padding: 0; flex: none; accent-color: var(--brand); }
+
+/* ===== 2026-11-23 구성 변경(UI리디자인: 노션 시안 '구성만', 홈·가리기·결과 2차 / 법 안내 1차, 사용자 확정). 색은 아직 흑백 — 색은 아래 --rd-* 변수로 나중에 바꿈. 백업 backup-20261123-구성변경 ===== */
+:root { --rd-bg: #f2f3f1; --rd-card: #ffffff; --rd-soft: #f2f3f1; --rd-line: #ececea; --rd-sub: #525252; --rd-dot-r: var(--danger); --rd-dot-w: var(--warn); --rd-dot-n: #8a8a8a; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --rd-bg: #000000; --rd-card: #1c1c1e; --rd-soft: #2c2c2e; --rd-line: #38383a; --rd-sub: #a3a3a3; --rd-dot-n: #a3a3a3; } }
+.rd-head svg, .rd-hero svg, .rd-row svg, .rd-steps svg, .rd-arow svg, .rd-ask svg, #topic-list .rd-tt svg, .tabbar .tc-dot svg { fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+/* 위쪽 바: 이름·제목이 화면 안에 있는 4개 화면에서는 숨김 */
+body:is([data-screen="s-home"], [data-screen="s-learn"], [data-screen="s-mask"], [data-screen="s-result"]) header.top { display: none; }
+body:is([data-screen="s-home"], [data-screen="s-learn"], [data-screen="s-mask"], [data-screen="s-result"]) { background: var(--rd-bg); }
+/* 떠 있는 아래 탭 5칸 + 가운데 '점검' */
+body { padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
+.tabbar { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bottom)); border: 0; border-radius: 24px; background: var(--rd-card); box-shadow: 0 6px 24px rgba(0,0,0,.10); padding: 4px; align-items: flex-end; overflow: visible; }
+.tabbar button { padding: 8px 0 7px; font-size: 11px; min-height: 52px; }
+.tabbar .tab-center { color: var(--text); font-weight: 700; }
+.tabbar .tc-dot { width: 54px; height: 54px; margin-top: -28px; margin-bottom: 1px; border-radius: 50%; background: var(--brand); color: var(--brand-text); display: grid; place-items: center; box-shadow: 0 0 0 5px var(--rd-card); }
+.tabbar .tc-dot svg { width: 24px; height: 24px; stroke-width: 2; }
+.ck-bar { bottom: calc(86px + env(safe-area-inset-bottom)); }
+#c-write { bottom: calc(100px + env(safe-area-inset-bottom)); }
+body[data-screen="s-comm"] { padding-bottom: calc(156px + env(safe-area-inset-bottom)); }
+
+/* 홈 */
+#s-home { padding-top: 20px; }
+.rd-brand { display: flex; align-items: center; gap: 8px; font-size: 17px; margin-bottom: 22px; }
+.rd-mark { width: 28px; height: 28px; border-radius: 8px; background: var(--brand); color: var(--brand-text); display: grid; place-items: center; }
+#s-home .rd-head .hero-t { margin: 6px 0 22px; }
+.rd-hero { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; width: 100%; border: 0; border-radius: 24px; background: var(--brand); color: var(--brand-text); padding: 20px 18px; text-align: left; font: inherit; position: relative; min-height: 170px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.rd-hero:active { opacity: .88; }
+.rd-ht b { display: block; font-size: 21px; letter-spacing: -.03em; } .rd-ht small { display: block; font-size: 13.5px; opacity: .78; margin-top: 3px; }
+.rd-go { position: absolute; right: 16px; top: 20px; width: 40px; height: 40px; border-radius: 50%; background: var(--brand-text); color: var(--brand); display: grid; place-items: center; }
+.rd-go svg { width: 20px; height: 20px; stroke-width: 2.2 !important; }
+.rd-row { display: flex; align-items: center; gap: 12px; width: 100%; margin-top: 10px; border: 0; border-radius: 18px; background: var(--rd-card); color: var(--text); padding: 14px; text-align: left; font: inherit; cursor: pointer; min-height: 66px; -webkit-tap-highlight-color: transparent; }
+.rd-row:active, .rd-arow:active, .rd-tt:active, .rd-ask:active { opacity: .7; }
+.rd-row .rd-ic { width: 40px; height: 40px; flex: none; border-radius: 12px; background: var(--rd-soft); display: grid; place-items: center; } .rd-row .rd-ic svg { width: 21px; height: 21px; }
+.rd-t { flex: 1; min-width: 0; } .rd-t b { display: block; font-size: 15.5px; } .rd-t small { display: block; font-size: 12.5px; color: var(--rd-sub); margin-top: 1px; }
+.rd-chev { width: 18px; height: 18px; flex: none; opacity: .5; }
+.rd-steps-h { margin: 30px 2px 14px; font-size: 17px; }
+.rd-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; list-style: none; padding: 0; margin: 0; }
+.rd-steps li { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 4px; position: relative; }
+.rd-si { width: 54px; height: 54px; border-radius: 50%; background: var(--rd-card); display: grid; place-items: center; position: relative; z-index: 1; margin-bottom: 4px; }
+.rd-si svg { width: 25px; height: 25px; }
+.rd-steps li:not(:last-child)::after { content: ""; position: absolute; top: 27px; left: calc(50% + 34px); right: calc(-50% + 34px); border-top: 1.5px dashed var(--line2); }
+.rd-n { font-size: 11.5px; font-weight: 700; color: var(--muted); }
+.rd-steps b { font-size: 15px; } .rd-steps small { font-size: 12px; color: var(--rd-sub); line-height: 1.45; }
+.rd-note2 { margin: 18px 2px 0; font-size: 12.5px; color: var(--rd-sub); text-align: center; }
+#s-home .home-sec { margin-top: 36px; }
+#s-home .home-disc { border-top: 0; }
+
+/* 개인정보 가리기: 화면 높이 전체(위쪽 바 없음), 사진 칸이 남는 높이를 차지 */
+#s-mask.active { height: 100dvh; padding: 8px 14px 0; }
+.rd-mh { display: flex; align-items: center; justify-content: space-between; min-height: 40px; }
+.rd-mh h2 { margin: 0; font-size: 18px; }
+.rd-pill { font-size: 12.5px; font-weight: 700; background: var(--rd-card); border-radius: 999px; padding: 5px 11px; }
+.rd-prog { list-style: none; margin: 2px 0 8px; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+.rd-prog li { display: flex; flex-direction: column; gap: 5px; font-size: 11.5px; color: var(--muted); font-weight: 500; }
+.rd-prog li i { display: block; height: 4px; border-radius: 2px; background: var(--line2); }
+.rd-prog li.done i, .rd-prog li.now i { background: var(--text); } .rd-prog li.now { color: var(--text); font-weight: 700; }
+.rd-cur { flex: 1; min-height: 0; display: flex; flex-direction: column; background: var(--rd-card); border-radius: 20px; padding: 12px 10px 10px; }
+#s-mask .mask-head.rd-ct { background: none; border: 0; padding: 0 4px 8px; margin: 0; align-items: flex-start; }
+#s-mask .rd-ct b { font-size: 16px; } #s-mask .rd-ct p { font-size: 12.5px; line-height: 1.45; color: var(--rd-sub); }
+#s-mask .rd-ct .link { min-height: 40px; font-size: 13px; }
+.rd-cur .stage { border-radius: 12px; }
+.rd-chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 8px 2px 0; }
+.rd-chips em { font-style: normal; font-size: 12.5px; font-weight: 700; color: var(--rd-sub); margin-right: 2px; }
+.rd-chips span { font-size: 12px; font-weight: 600; background: var(--rd-soft); border-radius: 999px; padding: 3px 9px; }
+.rd-cur .mask-count { margin: 6px 2px 0; font-size: 13px; }
+.rd-bottom { background: var(--rd-card); border-radius: 22px 22px 0 0; margin: 8px -14px 0; padding: 12px 14px calc(12px + env(safe-area-inset-bottom)); box-shadow: 0 -4px 18px rgba(0,0,0,.06); }
+.rd-bottom .mask-actions { margin: 0; } #s-mask .rd-bottom .btn { margin: 0; min-height: 52px; border-radius: 14px; font-size: 16px; }
+#s-mask .rd-bottom .hint { margin: 8px 2px 0; font-size: 12px; text-align: center; }
+
+/* 점검 결과 */
+#s-result > h2.sec { margin-top: 4px; }
+.rd-sum { background: var(--rd-card); border-radius: 22px; padding: 18px 14px 14px; margin-top: 10px; }
+#s-result .rd-nums { display: grid; grid-template-columns: repeat(3, 1fr); text-align: center; margin: 0; gap: 0; }
+#s-result .rd-nums > div { background: none; padding: 0; border: 0; color: var(--text); }
+.rd-nums b { display: block; font-size: 30px; font-weight: 800; line-height: 1.15; }
+.rd-nums span { display: inline-flex; align-items: center; gap: 5px; font-size: 13.5px; font-weight: 700; color: var(--text2); }
+.rd-nums i, .rd-lv i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; background: var(--rd-dot-n); }
+.lv-위험 > span > i, .lv-위험 .rd-lv i { background: var(--rd-dot-r); } .lv-주의 > span > i, .lv-주의 .rd-lv i { background: var(--rd-dot-w); }
+.rd-sum .res-basis { margin: 14px 0 0; padding-top: 12px; border-top: 1px solid var(--rd-line); font-size: 13px; color: var(--text2); }
+.rd-sum .ai-badge { margin: 6px 0 0; padding: 0; font-size: 12px; color: var(--muted); }
+.rd-g { margin: 26px 2px 8px; } .rd-g b { display: block; font-size: 17px; } .rd-g small { font-size: 12.5px; color: var(--rd-sub); }
+#findings .rd-f { display: block; background: var(--rd-card); border: 0; border-radius: 20px; padding: 16px; margin-top: 10px; }
+.rd-fh { display: flex; align-items: flex-start; gap: 10px; } .rd-fh b { flex: 1; font-size: 16px; line-height: 1.4; }
+.rd-lv { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 700; white-space: nowrap; margin-top: 2px; }
+.rd-f p { margin: 6px 0 0; font-size: 14px; color: var(--text2); line-height: 1.55; }
+.rd-law { margin-top: 8px; font-size: 12.5px; color: var(--muted); }
+.rd-more { display: inline-flex; align-items: center; min-height: 44px; margin-top: 4px; padding: 0; border: 0; background: none; font: inherit; font-size: 14px; font-weight: 700; color: var(--text); cursor: pointer; }
+#s-result #core-list { background: var(--rd-card); border-radius: 20px; padding: 2px 14px; border: 0; }
+#s-result #core-list > * { background: none !important; border-left: 0 !important; border-right: 0 !important; border-top: 0 !important; border-radius: 0 !important; box-shadow: none !important; margin: 0 !important; }
+#s-result #core-list > *:last-child { border-bottom: 0 !important; }
+#s-result #b-fields-toggle { background: var(--rd-card); border: 0; border-radius: 16px; margin-top: 10px; min-height: 52px; }
+#s-result .minor-card { background: none; border: 0; padding: 0 2px; margin-top: 26px; }
+#s-result .minor-card > b { font-size: 17px; }
+.rd-acts { background: var(--rd-card); border-radius: 20px; padding: 2px 0; }
+.rd-arow { display: flex; align-items: center; gap: 12px; width: 100%; margin: 0; border: 0; border-bottom: 1px solid var(--rd-line); border-radius: 0; background: none; color: var(--text); padding: 14px; text-align: left; font: inherit; min-height: 64px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.rd-arow:last-child { border-bottom: 0; }
+.rd-aic { width: 38px; height: 38px; flex: none; border-radius: 12px; background: var(--rd-soft); display: grid; place-items: center; } .rd-aic svg { width: 20px; height: 20px; }
+.rd-at { flex: 1; min-width: 0; } .rd-at b { display: block; font-size: 15.5px; } .rd-at small { display: block; font-size: 12px; color: var(--rd-sub); line-height: 1.4; margin-top: 1px; }
+.rd-bar { display: flex; gap: 8px; margin-top: 18px; }
+#s-result .rd-bar .btn { flex: 1; margin: 0; min-height: 52px; border-radius: 14px; }
+#s-result .rd-bar #b-copy-result { background: var(--rd-card); border-color: var(--rd-card); }
+#s-result .disclaimer { margin-top: 18px; padding: 0 2px; }
+
+/* 법 안내 */
+#s-learn { padding-top: 22px; }
+#s-learn > h2.sec { font-size: 28px; font-weight: 800; letter-spacing: -.04em; margin: 0; }
+#s-learn #learn-sub { margin: 4px 0 16px; font-size: 14px; }
+.rd-ask { display: block; width: 100%; background: var(--rd-card); color: var(--text); border: 0; border-radius: 22px; padding: 12px 12px 10px; font: inherit; text-align: left; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.rd-in { display: flex; align-items: center; gap: 8px; background: var(--rd-soft); border-radius: 999px; padding: 6px 6px 6px 18px; min-height: 52px; }
+.rd-in > span { flex: 1; color: var(--muted); font-size: 15px; }
+.rd-in i { width: 40px; height: 40px; border-radius: 50%; background: var(--brand); color: var(--brand-text); display: grid; place-items: center; }
+.rd-in i svg { width: 20px; height: 20px; stroke-width: 2.2 !important; }
+.rd-ask small { display: block; text-align: center; margin-top: 8px; font-size: 12.5px; color: var(--rd-sub); }
+#s-learn .rd-h { margin: 26px 2px 10px; font-size: 17px; }
+#topic-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+#topic-list .rd-tt { background: var(--rd-card); border: 0; border-radius: 18px; padding: 14px; text-align: left; font: inherit; color: var(--text); display: flex; flex-direction: column; gap: 3px; min-height: 138px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+#topic-list .rd-tt .rd-ic { width: 36px; height: 36px; border-radius: 11px; background: var(--rd-soft); display: grid; place-items: center; margin-bottom: 10px; }
+#topic-list .rd-tt .rd-ic svg { width: 20px; height: 20px; }
+#topic-list .rd-tt b { font-size: 15.5px; } #topic-list .rd-tt small { font-size: 12.5px; color: var(--rd-sub); line-height: 1.45; }
+#s-learn #learn-checked { margin-top: 14px; }
+@media print { .rd-bar, .rd-acts, .rd-more, .tabbar { display: none !important; } .rd-sum, #findings .rd-f { border: 1px solid #999 !important; } }
+/* 구성 변경 점검 수정: 가리기 '다시 찍기' 잘림·높이 44px, 결과 아래 버튼 줄바꿈 */
+#s-mask .rd-ct .link { flex: none; min-height: 44px; padding: 0 4px; white-space: nowrap; }
+#s-mask .rd-ct > div { min-width: 0; }
+#s-result .rd-bar .btn { white-space: nowrap; font-size: 15px; padding-left: 8px; padding-right: 8px; }
+#s-mask .rd-ct #b-back1 { margin: -6px 0; }
+#s-home .home-sec { margin: 36px 0 0; padding: 0; border-top: 0; }
+#s-result #b-first-detail { display: none !important; } /* 구성 변경: 카드마다 상세 보기가 있어 숨김(코드가 hidden을 풀어도 숨김) */
+.ck-bar { bottom: calc(104px + env(safe-area-inset-bottom)); } /* 구성 변경: 가운데 점검 버튼(탭 위로 28px 튀어나옴)과 겹치지 않게 */
+/* 2026-11-23 사용자 요청(휴대폰 확인 뒤): 가운데 '점검'도 동그라미 없이 옆 탭과 같은 모양(선 아이콘 + 글자, 선택되면 진하게) */
+.tabbar { align-items: stretch; }
+.tabbar .tab-center { color: var(--faint); font-weight: 500; }
+.tabbar .tab-center.on { color: var(--text); font-weight: 700; }
+.tabbar .tc-dot { width: auto; height: auto; margin: 0; border-radius: 0; background: none; color: inherit; box-shadow: none; display: block; line-height: 0; }
+.tabbar .tc-dot svg { width: 22px; height: 22px; stroke-width: 1.8; }
+.tabbar .tab-center.on .tc-dot svg { stroke-width: 2.1; }
+.ck-bar { bottom: calc(86px + env(safe-area-inset-bottom)); }
+.tabbar .tab-center:not(.on) { color: var(--muted); } /* 옆 탭과 같은 회색 */
+
+/* 2026-11-23 사용자 선택(20번 채팅): 결과 화면 [수정하기] 1개('핵심 계약 조건' 제목 줄). 평소엔 핵심 조건·33개 항목의 '고치기'를 숨기고, 누르면(.editing) 보임. 백업 backup-20261123-결과수정하기 */
+#s-result .rd-g.res-ed { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+#s-result .rd-g.res-ed > div { min-width: 0; }
+#s-result:not(.editing) #core-list .item.core > .mini, #s-result:not(.editing) #fields .kr .link[data-edit] { display: none; }
+
+/* 2026-11-23 21번 사용자 확정(1·2·3번): 홈 큰 판 카메라 상자 없애고 제목 옆 아이콘·판 비율 조정 / 점검 탭 아이콘 체크(index.html) / AI 질문 화면에서만 위쪽 'AI 질문' 버튼 숨김. 백업 backup-20261123-6개수정 */
+.rd-hero { flex-direction: row; align-items: center; gap: 12px; padding: 24px 20px; }
+.rd-hero .rd-ht { flex: 1; min-width: 0; }
+.rd-hero .rd-ht b { display: flex; align-items: center; gap: 8px; font-size: 21px; line-height: 1.25; }
+.rd-hero .rd-ht b svg { width: 26px; height: 26px; flex: none; stroke-width: 2 !important; }
+.rd-hero .rd-ht small { display: block; margin: 6px 0 0 34px; font-size: 13.5px; opacity: .78; }
+.rd-hero .rd-go { position: static !important; flex: none; }
+body[data-screen="s-ask"] .top-ask { display: none; }
+
+/* 2026-11-23 21번 사용자 확정(6번): 외주·연재 비교 시인성 — 배경 옅은 회색+흰 카드, 회색 글자 진하게·크게, 고른 계약 카드 체크, 결과는 항목별 카드·왼쪽 정렬·없음/다름 색 줄·A·B 이름 줄 고정, 값 확인 안내 3줄은 목록 아래(index.html). 백업 backup-20261123-6개수정 */
+#s-fl-check .fl-foot { margin: 18px 0 0; }
+#s-fl-check .fl-foot p { font-size: 13px; }
+
+body:is([data-screen="s-fl-setup"], [data-screen="s-fl-check"], [data-screen="s-fl-result"], [data-screen="s-fl-upload"]) { background: var(--rd-bg); }
+:is(#s-fl-setup, #s-fl-check, #s-fl-result) { --muted: #555555; }
+/* 설정 화면 */
+#s-fl-setup .pick button { background: var(--rd-card); border: 2px solid transparent; border-radius: 18px; position: relative; padding-top: 16px; padding-bottom: 16px; }
+#s-fl-setup .pick button b { font-size: 16.5px; }
+#s-fl-setup .pick button span { color: #555; font-size: 13.5px; }
+#s-fl-setup .pick button.on { border-color: var(--text); }
+#s-fl-setup .pick button.on::after { content: ""; position: absolute; top: 10px; right: 10px; width: 20px; height: 20px; border-radius: 50%; background: var(--text) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4L18 8'/%3E%3C/svg%3E") center/14px no-repeat; }
+#s-fl-setup .seg { background: var(--rd-card); border: 0; border-radius: 14px; padding: 4px; gap: 4px; overflow: visible; }
+#s-fl-setup .seg button { border: 0 !important; border-radius: 10px; font-size: 16px; }
+#s-fl-setup .k-label { font-size: 17px; margin-top: 22px; }
+#s-fl-setup .fl-plain, #s-fl-setup .guide p { color: #555; font-size: 14px; }
+#s-fl-setup #fl-preview { background: var(--rd-card) !important; border-radius: 18px !important; padding: 16px !important; }
+#s-fl-setup #fl-preview, #s-fl-setup #fl-preview * { color: var(--text2); font-size: 14.5px; }
+#s-fl-setup #fl-preview b { color: var(--text); font-size: 15.5px; }
+/* 값 확인 화면 */
+#s-fl-check #fl-check-body .item.ckr .k, #s-fl-check #fl-check-body .item .k { color: #555; font-size: 13.5px; }
+#s-fl-check #fl-check-body .item .v { font-size: 16px; }
+/* 결과 화면: 항목마다 카드, 왼쪽 정렬, 계약서 이름 줄 고정 */
+#s-fl-result .ct { border-top: 0; background: none; }
+#s-fl-result .ct .names { position: sticky; top: 56px; z-index: 1; background: var(--rd-card); border: 0; border-radius: 14px; box-shadow: 0 2px 10px rgba(0,0,0,.06); margin-bottom: 4px; }
+#s-fl-result .ct .names > div { font-size: 15px; padding: 12px 6px; }
+#s-fl-result .ct .band { margin-top: 14px; text-align: left; background: var(--rd-card); border: 0; border-bottom: 1px solid var(--rd-line); border-radius: 18px 18px 0 0; padding: 14px 14px 10px; }
+#s-fl-result .ct .band b { font-size: 16.5px; }
+#s-fl-result .ct .band .law { font-size: 12px; color: var(--text); background: var(--rd-soft); border-radius: 999px; padding: 2px 8px; margin-left: 6px; }
+#s-fl-result .ct .band p { font-size: 13.5px; color: #444; line-height: 1.5; margin-top: 6px; }
+#s-fl-result .ct .vals { background: var(--rd-card); border: 0; border-radius: 0 0 18px 18px; overflow: hidden; gap: 0; }
+#s-fl-result .ct .vals > div { text-align: left; font-size: 15px; line-height: 1.5; padding: 12px 12px 14px; border-right: 1px solid var(--rd-line); }
+#s-fl-result .ct .vals .miss { box-shadow: inset 0 4px 0 var(--lv-r); }
+#s-fl-result .ct .vals .diff { box-shadow: inset 0 4px 0 var(--lv-w); }
+#s-fl-result .ct .vals small { font-size: 12.5px; }
+#s-fl-result .ct-sum > div { background: var(--rd-card); border: 0; border-radius: 14px; padding: 12px 6px; font-size: 13.5px; }
+#s-fl-result .ct-sum b { font-size: 15px; }
+#s-fl-result .stat { border-radius: 16px; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) :is(#s-fl-setup, #s-fl-check, #s-fl-result) { --muted: #b5b5b5; } :root:not([data-theme="light"]) #s-fl-result .ct .band p, :root:not([data-theme="light"]) #s-fl-check #fl-check-body .item .k { color: #c8c8c8; } }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) #s-fl-setup .pick button.on::after { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4L18 8'/%3E%3C/svg%3E"); } } /* 어두운 모드: 흰 동그라미 안 체크는 검정 */
+#s-fl-result .ct .vals:has(+ .open) { border-radius: 0; } #s-fl-result .ct .open { border: 0; border-top: 1px solid var(--rd-line); border-radius: 0 0 18px 18px; padding: 10px 14px 12px; font-size: 14px; } /* 3개 '한눈에 보기'에서 항목 펼침도 같은 카드로 */
+
+/* 2026-11-23 21번 사용자 확정(4·5번): 홈 로고 = 서명 그림(sig.png, 글자색 따라감, 계약스캔 왼쪽) / 처음 접속 서명 효과(index.html #intro, intro.js). 백업 backup-20261123-서명로고 */
+.rd-brand { gap: 8px; }
+.rd-mark { width: auto; height: auto; background: none; border-radius: 0; display: inline-flex; color: var(--text); }
+.sig-logo { display: block; height: 22px; aspect-ratio: 1206 / 315; background: currentColor; -webkit-mask: url(sig.png) center / contain no-repeat; mask: url(sig.png) center / contain no-repeat; }
+#intro { display: none; }
+html.intro-on #intro { position: fixed; inset: 0; z-index: 60; background: var(--bg); display: grid; place-items: center; transition: background-color .5s ease; cursor: pointer; }
+html.intro-on .rd-mark { visibility: hidden; }
+#intro svg { width: min(78vw, 340px); height: auto; aspect-ratio: 1206 / 315; color: var(--text); overflow: visible; transform-origin: 0 0; transition: transform .6s cubic-bezier(.65,0,.25,1); }
+#intro .pen { stroke-dasharray: 1 2; stroke-dashoffset: 1; animation: sigpen 1.25s cubic-bezier(.55,.05,.35,1) .2s forwards; }
+@keyframes sigpen { to { stroke-dashoffset: 0; } }
+html.intro-on #intro.fly { background-color: transparent; }
+/* 안전장치: intro.js를 못 불러와도 4초 뒤에는 효과 화면이 사라지고 로고가 보이게 */
+html.intro-on #intro { animation: introSafe 0s linear 4s forwards; } html.intro-on .rd-mark { animation: introMark 0s linear 4s forwards; }
+@keyframes introSafe { to { visibility: hidden; pointer-events: none; } } @keyframes introMark { to { visibility: visible; } }
+
+/* 2026-11-23 21번 사용자 확정: 홈 로고 서명 14px(22→14), 계약스캔 오른쪽(index.html). 처음 접속 효과도 이 자리·크기로 들어감 */
+.sig-logo { height: 14px; }
+
+/* ===== 2026-11-23 21번 구성안 C(사용자 확정, 아래 탭 점은 뺌): 회색 그라데이션 바탕·흰 카드 20px·그림자·링크 파랑·판정 점 색·단계 표시줄·판정 카드 펼치기. 근거 바탕화면 handoff_UXUI_시안_구성안C.md 3절. 백업 backup-20261123-구성안C ===== */
+:root { --c-bg1: #f6f5f2; --c-bg2: #eceff4; --c-card: rgba(255,255,255,.96); --c-blue: #2f5fe0; --c-blue-soft: #e8eefc; --c-link: #2349b8;
+  --c-r: #ff6b5e; --c-w: #ffb83d; --c-n: #4a86f7; --c-shadow: 0 2px 14px rgba(20,30,60,.07); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --c-bg1: #0b0b0c; --c-bg2: #121418; --c-card: #1c1c1e; --c-blue: #6d8ff0; --c-blue-soft: #1d2740; --c-link: #9db3ff; --c-shadow: none; } }
+/* 바탕: 모든 화면 회색 그라데이션 */
+body, body:is([data-screen]) { background: linear-gradient(180deg, var(--c-bg1), var(--c-bg2)) fixed !important; }
+/* 위쪽 바는 따라 내려오므로(sticky) 투명이면 아래 글과 겹침 → 바탕 그라데이션 맨 위 색으로 채움(11-23 상단바 겹침 수정, 백업 backup-20261123-상단바겹침) */
+.top { background: var(--c-bg1) !important; border-bottom: 0 !important; }
+/* 카드: 흰색, 둥근 20px, 옅은 그림자 */
+.card:not(.info-plain):not(.guide):not(:has(.ai-badge)):not(:has(.disclaimer-b)), .group, .rd-row, .rd-sum, #findings .rd-f, #s-result #core-list, .rd-acts, #s-result #b-fields-toggle, .t-tile, #topic-list .tile, .rd-cur, #s-fl-result .ct .band, #s-fl-result .ct-sum > div, #s-fl-setup #fl-preview, .rd-ask, .rd-arow {
+  background: var(--c-card) !important; border: 0 !important; border-radius: 20px !important; box-shadow: var(--c-shadow) !important; }
+#s-fl-result .ct .band { border-radius: 20px 20px 0 0 !important; box-shadow: none !important; } #s-fl-result .ct .vals { background: var(--c-card) !important; }
+/* 링크·더보기: 파랑 */
+.rd-more, .more, .link, .pv-link, a { color: var(--c-link) !important; }
+/* 판정 색 점 */
+.lv-위험 .rd-lv i, .rd-nums .lv-위험 i { background: var(--c-r) !important; } .lv-주의 .rd-lv i, .rd-nums .lv-주의 i { background: var(--c-w) !important; } .lv-참고 .rd-lv i, .rd-nums .lv-참고 i { background: var(--c-n) !important; }
+/* 단계 표시줄: 촬영 → 가리기 → 분석 */
+.c-steps { display: flex; align-items: center; gap: 0; margin: 4px 2px 16px; }
+.c-steps .st { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); white-space: nowrap; }
+.c-steps .st i { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-style: normal; font-size: 12px; font-weight: 800; background: var(--line, #ddd); color: #fff; flex: none; }
+.c-steps .st.done i { background: var(--c-blue); } .c-steps .st.done i::before { content: ""; width: 10px; height: 6px; border: solid #fff; border-width: 0 0 2.2px 2.2px; transform: translateY(-1px) rotate(-45deg); }
+.c-steps .st.now i { background: var(--c-blue); } .c-steps .st.now { color: var(--text); font-weight: 800; }
+.c-steps .ln { flex: 1; height: 2px; background: var(--line, #ddd); margin: 0 8px; border-radius: 2px; }
+.c-steps .ln.done { background: var(--c-blue); }
+/* 결과: 판정 카드 = 제목 + 오른쪽 '색 점 + 굵은 등급' + ›, 눌러서 펼치기 */
+#findings .rd-g { display: none; }
+#findings .rd-f { padding: 18px 18px !important; margin-top: 12px !important; cursor: pointer; }
+#findings .rd-fh { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+#findings .rd-fh b { font-size: 17px; line-height: 1.4; }
+#findings .rd-lv { display: inline-flex; align-items: center; gap: 6px; font-weight: 800; font-size: 15px; white-space: nowrap; color: var(--text) !important; }
+#findings .rd-lv::after { content: "›"; color: var(--muted); font-weight: 400; font-size: 18px; margin-left: 4px; transition: transform .2s; display: inline-block; }
+#findings .rd-f.c-open .rd-lv::after { transform: rotate(90deg); }
+#findings .rd-f:not(.c-open) > :not(.rd-fh) { display: none; }
+#findings .rd-f > p { font-size: 15px; line-height: 1.6; margin: 12px 0 8px; }
+#findings .rd-law { font-size: 13px; color: var(--muted); }
+#findings .rd-more { font-weight: 700; margin-top: 12px; padding-left: 0; }
+/* 인쇄·PDF 저장 때는 접힌 판정 카드도 모두 펼쳐서 */
+@media print { #findings .rd-f:not(.c-open) > :not(.rd-fh) { display: revert !important; } #findings .rd-lv::after, .c-steps { display: none !important; } }
+#findings .rd-fh:focus-visible { outline: 2px solid var(--c-blue); outline-offset: 4px; border-radius: 8px; }
+
+/* 2026-11-23 21번: 짧은 화면(점검 탭 등) 아래쪽이 흰색으로 보이던 것 — html 바탕도 그라데이션 끝 색으로 */
+html { background: var(--c-bg2) !important; }
+
+/* 2026-11-23 21번: 계약 종류 이름이 바뀌며 320px에서 체크 표시가 제목을 가림 → 제목 오른쪽 여백 / 어두운 모드 예시 글자 흐림 → 밝게 */
+#s-fl-setup .pick button b { display: block; padding-right: 22px; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) #s-fl-setup .pick button span { color: #b5b5b5; } }
+
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) #s-fl-setup .fl-plain, :root:not([data-theme="light"]) #s-fl-setup .guide p { color: #b5b5b5; } } /* 어두운 모드: 6번에서 진하게 한 회색(#555)이 검은 바탕에서 흐림 → 밝게 */
+#s-fl-setup .pick button b, #s-fl-setup .pick button span { word-break: keep-all; overflow-wrap: normal; } /* 320px에서 낱말 중간 줄바꿈 막기(화면 전체의 overflow-wrap:anywhere 끔) */
+
+/* ===== 2026-11-23 21번 줄 맞춤(사용자 요청 "줄 맞춤 안 된 거 전체 다 뒤져서 맞춰"): 자동 검사(캡처도구/줄맞춤-검사.mjs)에서 같은 화면의 세로선과 2~5px 어긋난 곳 백업 backup-20261123-줄맞춤 ===== */
+/* 상자 없이 글만 둔 안내(상자 해제)의 좌우 2px 안쪽 여백 → 0: 화면 왼쪽 줄(20px)에 맞춤. AI 안내 띠가 그 안에 겹쳐 4px 들어가던 것도 */
+.card.guide, .card.info-plain, .notice.info-plain, .empty.info-plain, #s-article .card:has(#a-version), #a-small.notice, #a-note.notice, #s-topic .card:has(.disclaimer-b), .ai-badge, .empty { padding-left: 0 !important; padding-right: 0 !important; }
+/* 제목 줄의 좌우 2px 여백 → 0 */
+.rd-g, #s-learn .rd-h { margin-left: 0 !important; margin-right: 0 !important; }
+/* 카드 안쪽 여백을 같은 화면의 다른 카드와 같게 */
+.rd-ask { padding-left: 14px !important; padding-right: 14px !important; }                 /* 법 안내 질문 칸: 주제 칸 글자(34px)에 */
+.rd-sum { padding-left: 18px !important; padding-right: 18px !important; }                 /* 결과 요약: 판정 카드 글자(38px)에 */
+#s-result #b-fields-toggle { padding-left: 18px !important; padding-right: 18px !important; }
+#s-fl-setup .pick button, #s-fl-setup .pick button.on { padding: 16px 14px !important; }   /* 외주 계약 종류: 기준 설명 글자(36px)에 */
+#fl-check-body > .card { padding-left: 14px !important; padding-right: 14px !important; }  /* 외주 값 확인 '계약서 이름': 아래 목록(34px)에 */
+/* 목록 줄·안내 글의 좌우 2px 여백 → 0: 커뮤니티 글 목록(홈·커뮤니티 탭)·댓글·불러오는 중 줄·결과 화면 아래 안내 */
+.c-row, .cm, .hp-skel > div, #s-result .minor-card, #s-result .disclaimer { padding-left: 0 !important; padding-right: 0 !important; }
+.disc-links > .pv-link:first-child { margin-left: 0 !important; padding-left: 0 !important; } /* 커뮤니티 탭 맨 아래 '커뮤니티 운영정책' 줄 첫 링크 */
+
+/* ===== 2026-11-23 법 안내 비율 조정(사용자 요청 "법 안내 탭의 전체적인 비율 조정해"), 백업 backup-20261123-법안내비율 =====
+   주제 칸: 아이콘+이름만 있는데 최소 높이 138px라 아래 절반이 비어 있던 것 → 내용 높이에 맞춤(약 3:2), 아이콘·이름 한 단계 키움 */
+#topic-list { gap: 12px; }
+#topic-list .rd-tt { min-height: 0; padding: 16px 14px 18px; gap: 0; }
+#topic-list .rd-tt .rd-ic { width: 38px; height: 38px; border-radius: 12px; margin-bottom: 14px; }
+#topic-list .rd-tt .rd-ic svg { width: 20px; height: 20px; }
+#topic-list .rd-tt b { font-size: 16.5px; line-height: 1.35; }
+#s-learn #learn-sub { margin-bottom: 18px; }
+#s-learn .rd-h { margin-top: 28px; margin-bottom: 12px; }
+#s-learn #learn-checked { margin-top: 18px; font-size: 13px; }
+
+/* 커뮤니티 분류 태그 줄 맞춤(11-23 15:28, A안): 회색 배경·안쪽 여백 없애 글자가 다른 줄과 같은 왼쪽선에서 시작 */
+.c-tag:not(.sample) { background: none; padding: 2px 0; }
+
+/* 11-23 15:40 사용자 요청 묶음(백업 backup-20261123-법안내AI질문) */
+/* 법 안내 주제 칸: 사용자 그림처럼 요약 글 다시 넣고 노란 아이콘 칸 */
+#topic-list .rd-tt { padding: 18px 16px 20px; }
+#topic-list .rd-tt .rd-ic { background: #fdf1c7; color: #8a6400; margin-bottom: 16px; }
+#topic-list .rd-tt b { font-size: 17px; }
+#topic-list .rd-tt small { display: block; margin-top: 8px; font-size: 13.5px; line-height: 1.5; color: var(--text2); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) #topic-list .rd-tt .rd-ic { background: rgba(250, 204, 21, .16); color: #f5c84c; } }
+:root[data-theme="dark"] #topic-list .rd-tt .rd-ic { background: rgba(250, 204, 21, .16); color: #f5c84c; }
+/* 홈: 외주·연재 칸과 커뮤니티 사이 간격 36 → 56px */
+#s-home .home-sec { margin-top: 56px; }
+/* AI 질문: 예시 질문 묶음을 빼서 '보내기'와 아래 카드가 붙음 → 원래 묶음 위 간격(16px)만큼 띄움 */
+#s-ask > .card:has(> [data-go="s-unknown"]) { margin-top: 16px; }
+
+/* 11-23 16:00 사용자 요청: 홈 '근로계약서 점검하기' 큰 판 검정 → 흰 카드, '외주·연재 비교' 줄 흰 카드 → 회색(백업 backup-20261123-홈카드색) */
+#s-home .rd-hero { background: var(--c-card); color: var(--text); box-shadow: var(--c-shadow); }
+#s-home .rd-hero .rd-go { background: var(--brand); color: var(--brand-text); }
+#s-home .rd-row { background: #e4e6ea !important; box-shadow: none !important; }
+#s-home .rd-row .rd-ic { background: #ffffff; }
+/* 어두운 모드: 큰 판은 원래대로 흰색(--brand), 외주 줄은 회색 */
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) #s-home .rd-hero { background: var(--brand); color: var(--brand-text); } :root:not([data-theme="light"]) #s-home .rd-hero .rd-go { background: var(--brand-text); color: var(--brand); } :root:not([data-theme="light"]) #s-home .rd-row { background: #2c2c2e !important; } :root:not([data-theme="light"]) #s-home .rd-row .rd-ic { background: #3a3a3c; } }

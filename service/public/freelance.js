@@ -6,7 +6,7 @@
 (() => {
   const $ = id => document.getElementById(id);
   const ABC = 'ABC';
-  const TYPE_LABEL = { 납품형: '만들어 주고 돈 받는 계약', 권리형: '내 작품을 쓰게 하는 계약', 전속형: '한 곳에 묶여 활동하는 계약(전속)', 근로형: '사실상 근로계약', 기타: '기타 계약' };
+  const TYPE_LABEL = { 납품형: '용역·납품 계약', 권리형: '저작물 이용 계약', 전속형: '한 곳에 묶여 활동하는 계약(전속)', 근로형: '사실상 근로계약', 기타: '기타 계약' };
   // 값 확인에서 고칠 수 있는 숫자 칸(사용자 결정 2026-11-20: 있음/없음 + 핵심 숫자)
   const EDIT = {
     납품형: { amount: [['amount', '계약 금액', '원']], pay: [['advance_pct', '먼저 받는 돈 비율', '%'], ['final_days', '나머지를 받기까지', '일']],
@@ -230,7 +230,7 @@
   }
 
   // ---------- ④ 값 확인 ----------
-  function openCheck(i) { st.tab = i; renderCheck(); show('s-fl-check'); }
+  function openCheck(i) { st.tab = i; st.editMode = false; renderCheck(); show('s-fl-check'); }
   function renderCheck() {
     const cs = st.contracts, c = cs[st.tab], i = st.tab;
     $('fl-tabs').innerHTML = cs.map((x, k) => `<button data-fltab="${k}" class="${k === i ? 'on' : ''}">${ABC[k]} ${esc(nmShort(nameOf(x, k)))}${x.exclude ? ' (뺌)' : ''}</button>`).join('');
@@ -252,38 +252,35 @@
       ${c.res.companyFlag ? '<p class="qwarn">회사 이름을 두 번 다르게 읽었어요. 원본과 같은지 확인해 주세요.</p>' : ''}</div>`;
     const items = (c.rows ?? []).map(row => {
       const cell = row.cells[0], fl = c.flags[row.id];
-      const tag = c.edited[row.id] ? '<span class="tag ok">고침</span>' : c.confirmed[row.id] ? '<span class="tag ok">원본과 같아요</span>'
-        : fl ? '<span class="tag check">확인 필요</span>' : cell.status === 'missing' ? '<span class="tag na">계약서에 없음</span>' : cell.status === 'none' ? '<span class="tag na">적혀 있지 않음</span>' : cell.status === 'unknown' ? '<span class="tag na">확인 못 함</span>' : '';
+      const tag = c.edited[row.id] ? '<span class="tag ok">고침</span>' : fl ? '<span class="tag check">확인 필요</span>' : cell.status === 'missing' ? '<span class="tag na">계약서에 없음</span>' : cell.status === 'none' ? '<span class="tag na">적혀 있지 않음</span>' : cell.status === 'unknown' ? '<span class="tag na">확인 못 함</span>' : '';
       const why = fl ? `<div class="why">${[...new Set(fl.map(x => FLAG_TEXT[x] ?? '숫자를 두 번 다르게 읽었어요'))].map(esc).join(' · ')}</div>` : '';
       const v = cell.status === 'unknown' ? `<span class="muted">${esc(cell.notice)}</span>` : cell.status === 'missing' || cell.status === 'none' ? '—' : esc(cell.text || '—') + (cell.same_basis ? ` <span class="muted">(같은 기준 약 ${cell.same_basis.toLocaleString('ko-KR')}원)</span>` : '');
-      return `<div class="item${fl ? ' check' : ''}"><div class="k"><span>${esc(row.name)}</span>${tag}</div><div class="v sm">${v}</div>${why}
-        <div class="acts"><button class="chip" data-flok="${row.id}">원본과 같아요</button><button class="mini" data-fledit="${row.id}">고치기</button></div></div>`;
+      return `<div class="item ckr${fl ? ' check' : ''}"><div class="k"><span>${esc(row.name)}</span>${tag}</div><div class="v sm">${v}</div>${why}
+        <div class="acts"><button class="mini" data-fledit="${row.id}">고치기</button></div></div>`;
     }).join('');
-    $('fl-check-body').innerHTML = warn + nameBox + `<div class="group">${items}</div>`;
+    // 2026-11-23 사용자 선택(대안 4): [수정하기]를 눌러야 줄마다 '고치기'가 보임(근로 값 확인과 같은 방식)
+    const on = !!st.editMode;
+    $('s-fl-check').classList.toggle('editing', on);
+    const head = `<div class="ed-head"><div class="k-label">항목 확인</div><button type="button" class="mini ed-toggle" data-flmode="1" aria-pressed="${on}">${on ? '완료' : '수정하기'}</button></div>`;
+    $('fl-check-body').innerHTML = warn + nameBox + head + `<div class="group">${items}</div>`;
     // 진행 막대(UI 개선 ③ 3차 18): 비교에 넣은 계약서 전체에서 확인·고친 항목 수, 확인 필요 수
     const inc = cs.filter(x => !x.exclude), all = inc.flatMap(x => (x.rows ?? []).map(row => [x, row.id]));
-    const done = all.filter(([x, id]) => x.confirmed[id] || x.edited[id]).length, need = all.filter(([x, id]) => x.flags[id]).length;
-    $('fl-progress').textContent = `${all.length}개 중 ${done}개 확인`;
-    $('b-fl-all').hidden = c.exclude || !(c.rows ?? []).some(row => !c.confirmed[row.id] && !c.edited[row.id]); // UI/UX 2차 3
+    // 2026-11-23 사용자 요청: '원본과 같아요' 버튼 뺌 → 진행은 고친 개수만
+    const done = all.filter(([x, id]) => x.edited[id]).length, need = all.filter(([x, id]) => x.flags[id]).length;
+    $('fl-progress').textContent = `${all.length}개 중 ${done}개 고침`;
     $('fl-progress-sub').textContent = need ? `확인 필요 ${need}개 · 확인하지 않아도 결과를 볼 수 있어요` : '다 확인하지 않아도 결과를 볼 수 있어요';
   }
-  // UI/UX 2차 3: 지금 보고 있는 계약서의 남은 항목을 한 번에 '원본과 같아요'(확인 창 한 번)
-  $('b-fl-all').addEventListener('click', () => {
-    const c = st.contracts[st.tab], left = (c.rows ?? []).filter(row => !c.confirmed[row.id] && !c.edited[row.id]);
-    if (!left.length || !confirm(`이 계약서의 남은 ${left.length}개 항목이 모두 원본과 같은지 한 번 더 확인했나요? 금액·날짜는 특히 원본과 비교해 주세요.`)) return;
-    left.forEach(row => { c.confirmed[row.id] = true; delete c.flags[row.id]; }); renderCheck();
-  });
   $('fl-tabs').addEventListener('click', e => { const b = e.target.closest('[data-fltab]'); if (b) { st.tab = +b.dataset.fltab; renderCheck(); } });
   $('fl-check-body').addEventListener('input', e => { if (e.target.id === 'fl-nm') { st.contracts[st.tab].name = e.target.value; } });
   $('fl-check-body').addEventListener('change', e => { if (e.target.id === 'fl-nm') renderCheck(); });
   let editing = null;
   $('fl-check-body').addEventListener('click', e => {
     const d = e.target.closest('button')?.dataset ?? {}, c = st.contracts[st.tab];
+    if (d.flmode) { st.editMode = !st.editMode; renderCheck(); $('fl-check-body').querySelector('[data-flmode]')?.focus(); return; }
     if (d.flact === 'keep') { c.keep = true; renderCheck(); }
     if (d.flact === 'exclude') { c.exclude = true; renderCheck(); }
     if (d.flact === 'include') { c.exclude = false; c.keep = true; renderCheck(); }
     if (d.flact === 'replace') { Object.assign(c, newContract(), { name: '' }); renderSlots(); show('s-fl-upload'); }
-    if (d.flok) { c.confirmed[d.flok] = true; delete c.flags[d.flok]; renderCheck(); }
     if (d.fledit) {
       editing = d.fledit;
       const f = c.res.result.items[editing] ?? {}, row = c.rows.find(x => x.id === editing);

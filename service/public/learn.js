@@ -50,10 +50,25 @@ function bodyHtml(body) {
 
 function failLearn(retry) { fail('법 안내 자료를 불러오지 못했어요. 인터넷 연결을 확인한 뒤 다시 시도해 주세요.', undefined, { retry, back: ['홈으로 돌아가기', () => show('s-home')], tab: 's-learn' }); }
 
+// 2026-11-23 구성 변경: 법 안내 주제 아이콘(선 굵기는 CSS에서 1.75)
+const TOPIC_IC = {
+  hours: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  rest: '<path d="M4 9h12v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M16 11h1.5a2 2 0 0 1 0 4H16"/><path d="M8 3.5v2M12 3.5v2"/>',
+  weekly: '<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4M16 3v4"/>',
+  minwage: '<circle cx="12" cy="12" r="9"/><path d="M14.5 9.5c-.5-1-1.4-1.5-2.5-1.5-1.5 0-2.5.8-2.5 2s1 1.7 2.5 2 2.5.8 2.5 2-1 2-2.5 2c-1.1 0-2-.5-2.5-1.5M12 6.5V8M12 16v1.5"/>',
+  annual: '<circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4 7 17M17 7l1.4-1.4"/>',
+  probation: '<path d="M12 20v-8"/><path d="M12 12c0-4-3-6-7-6 0 4 3 6 7 6z"/><path d="M12 14c0-3 2.5-5 6-5 0 3-2.5 5-6 5z"/>',
+  insurance: '<path d="M3 12a9 9 0 0 1 18 0z"/><path d="M12 12v6a2 2 0 0 0 4 0"/>',
+  dismissal: '<path d="M14 4H6a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h8"/><path d="M10 12h10M17 9l3 3-3 3"/>',
+  severance: '<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6.5 9.5h.01M17.5 14.5h.01"/>',
+  unemployment: '<circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/>',
+};
 async function openLearn() {
   try { await loadLaws(); } catch { return failLearn(openLearn); }
+  // 2026-11-23 구성 변경: 2칸 격자 + 주제별 선 아이콘(데이터의 이모지 대신, 같은 굵기 SVG). 아이콘이 없는 주제는 빈 칸
   $('topic-list').innerHTML = LAWS.topics.map(t =>
-    `<button class="tile icon-tile" data-topic="${t.id}"><i aria-hidden="true">${t.icon}</i><span><b>${escL(t.title)}</b><span>${escL(t.lead)}</span></span>${CHEV}</button>`).join('');
+    `<button class="rd-tt" data-topic="${t.id}"><span class="rd-ic"><svg viewBox="0 0 24 24" aria-hidden="true">${TOPIC_IC[t.id] || ''}</svg></span><b>${escL(t.title)}</b><small>${escL(t.lead)}</small></button>`).join('');
+  $('learn-sub').textContent = `${LAWS.topics.length}개 주제를 쉬운 말로 정리했어요`;
   $('learn-checked').textContent = `내용 확인일 ${LAWS.checked} · 국가법령정보센터 원문 기준`;
   show('s-learn');
 }

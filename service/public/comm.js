@@ -126,6 +126,11 @@ async function loadList(append) {
   $('b-list').innerHTML = append ? $('b-list').innerHTML + html : (html || empty);
   more.hidden = !d.more;
 }
+// ---------- 닉네임 저장(2026-11-23 사용자 요청) ----------
+// '닉네임 저장'에 체크하고 글·댓글을 등록하면 닉네임을 이 브라우저(localStorage)에만 기억, 체크를 풀고 등록하면 지움. 서버는 바꾸지 않음.
+const NICK_KEY = 'myNick';
+function savedNick() { try { return localStorage.getItem(NICK_KEY) || ''; } catch { return ''; } }
+function keepNick(on, nick) { try { if (on) localStorage.setItem(NICK_KEY, nick); else localStorage.removeItem(NICK_KEY); } catch { /* 저장 불가 */ } }
 // ---------- 내 글(2026-11-23 사용자 선택 A) ----------
 // 로그인이 없어서, 글을 쓰면 글 번호만 이 브라우저(localStorage)에 기억해 두고 모아 보여 줌. 서버·DB는 바꾸지 않음.
 // 다른 기기·브라우저, 이 기능 전에 쓴 글은 안 보임. 저장이 막힌 브라우저(사생활 보호 모드 등)에서는 빈 목록.
@@ -183,6 +188,8 @@ async function openPost(id, keep = false) {
   if (d.error) return fail(d.error, '글을 열 수 없어요', { back: HOME_BACK, tab: 's-comm' });
   post = d.post;
   const p = d.post;
+  // 닉네임 저장(2026-11-23): 댓글 닉네임 칸이 비어 있으면 저장한 닉네임을 넣음
+  const sn = savedNick(); if (!$('cm-nick').value) $('cm-nick').value = sn; $('cm-nick-save').checked = !!sn;
   if (!keep) {
     const label = from === 's-board' ? (cur.board === 'hot' ? 'HOT' : cur.board === 'mine' ? '내 글' : `${BOARD[cur.board]} 게시판`) : from === 's-comm' ? '커뮤니티' : from === 's-home' ? '홈' : null;
     postBack = label ? { label, back: true } : { label: `${BOARD[p.board]} 게시판`, back: false };
@@ -246,7 +253,8 @@ $('cm-send').addEventListener('click', async () => {
   $('cm-send').disabled = false;
   if (!d) return warn('cm-warn', '등록하지 못했어요. 인터넷 연결을 확인해 주세요.');
   if (d.error) return warn('cm-warn', d.error);
-  warn('cm-warn', ''); $('cm-body').value = ''; $('cm-nick').value = ''; $('cm-pw').value = ''; $('cm-count').textContent = '0/500';
+  const keep = $('cm-nick-save').checked; keepNick(keep, nick); if (keep) myNick = nick;
+  warn('cm-warn', ''); $('cm-body').value = ''; $('cm-nick').value = keep ? nick : ''; $('cm-pw').value = ''; $('cm-count').textContent = '0/500';
   openPost(post.id, { mine: { nick, body } });
 });
 CM_ELS().forEach(el => el.addEventListener('input', () => fieldErr(el, '')));
@@ -314,7 +322,7 @@ $('cm-ov-yes').addEventListener('click', async () => {
 let w = { topic: '', share: null, edit: null };
 // 새 글 초안: 등록하기 전까지 이 화면(탭)에서만 기억. 기기 저장소에는 남기지 않음(문제 2)
 let draft = null;
-let myNick = '', myJob = ''; // 새 글에 입력한 닉네임·근무 형태(글 수정 화면 값과 분리)
+let myNick = savedNick(), myJob = ''; // 새 글에 입력한 닉네임·근무 형태(글 수정 화면 값과 분리). 닉네임은 저장한 값으로 시작
 function syncDraft() {
   if (w.edit) return;
   const title = $('w-title').value, body = $('w-body').value;
@@ -331,6 +339,7 @@ function openWrite({ board = 'qna', topic = '', share = null, edit = null, fromR
   $('w-board').disabled = !!edit;
   // 새 글은 내가 새 글에 썼던 닉네임·근무 형태를 넣음. 수정한 글의 값이 새 글에 남지 않게 따로 기억(2026-11-21)
   $('w-nick').value = edit ? edit.nick : myNick; $('w-nick').disabled = !!edit;
+  $('w-nick-save-wrap').hidden = !!edit; $('w-nick-save').checked = !!savedNick();
   $('w-job').value = edit ? edit.job ?? '' : myJob;
   $('w-title').value = edit ? edit.title : dr ? dr.title : ''; $('w-body').value = edit ? edit.body : dr ? dr.body : '';
   $('w-pw-wrap').hidden = !!edit; $('w-pw').value = '';
@@ -382,6 +391,7 @@ $('w-send').addEventListener('click', async () => {
   if (d.error) return warn('w-warn', d.error);
   verifiedPw = null; w.shareRemoved = false;
   if (!w.edit && Number.isInteger(d.id)) addMine(d.id); // 내 글 모아보기용으로 글 번호만 이 브라우저에 기억
+  if (!w.edit) keepNick($('w-nick-save').checked, nick);
   if (!w.edit) draft = null; // 등록했으면 초안 비움
   // 등록 후 글 상세로. 글쓰기·비밀번호 화면은 '뒤로'로 다시 오지 않게 기록을 덮어씀
   history.replaceState({ screen: 's-post' }, '');
